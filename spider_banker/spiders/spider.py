@@ -20,7 +20,7 @@ class SpiderSpider(scrapy.Spider):
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
-    name = 'spider'
+    name = 'banker'
     allowed_domains = ['www.bankersalmanac.com']
     start_urls = []
 
