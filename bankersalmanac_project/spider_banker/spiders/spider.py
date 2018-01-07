@@ -58,6 +58,8 @@ class SpiderSpider(scrapy.Spider):
         :param response:
         :return:
         '''
+        #bocom122 bocom1
+
         match_obj = re.match('.*name="ReturnUrl" value="(.*?)"', response.text, re.DOTALL)
         return_url = ''
         if match_obj:
