@@ -83,10 +83,17 @@
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
-                <marker date="1515287192000" expanded="true" signature="61780:62133" ph="..." />
-                <marker date="1515287192000" expanded="true" signature="61781:62118" ph="..." />
-                <marker date="1515287192000" expanded="true" signature="61843:62105" ph="..." />
-                <marker date="1515287192000" expanded="true" signature="61887:62087" ph="..." />
+                <marker date="1515287197000" expanded="true" signature="61965:62318" ph="..." />
+                <marker date="1515287197000" expanded="true" signature="61966:62303" ph="..." />
+                <marker date="1515287197000" expanded="true" signature="62028:62290" ph="..." />
+                <marker date="1515287197000" expanded="true" signature="62072:62272" ph="..." />
+                <marker date="1515287197000" expanded="true" signature="62353:62708" ph="..." />
+                <marker date="1515287197000" expanded="true" signature="62366:62693" ph="..." />
+                <marker date="1515287197000" expanded="true" signature="62414:62679" ph="..." />
+                <marker date="1515287197000" expanded="true" signature="62433:62664" ph="..." />
+                <marker date="1515287197000" expanded="true" signature="62466:62644" ph="..." />
+                <marker date="1515287197000" expanded="true" signature="62506:62610" ph="..." />
+                <marker date="1515287197000" expanded="true" signature="62527:62588" ph="..." />
               </folding>
             </state>
           </provider>
@@ -591,7 +598,14 @@
       <option name="project" value="LOCAL" />
       <updated>1515287195042</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="t12">
+      <created>1515287199695</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1515287199695</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1089,10 +1103,17 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1515287192000" expanded="true" signature="61780:62133" ph="..." />
-            <marker date="1515287192000" expanded="true" signature="61781:62118" ph="..." />
-            <marker date="1515287192000" expanded="true" signature="61843:62105" ph="..." />
-            <marker date="1515287192000" expanded="true" signature="61887:62087" ph="..." />
+            <marker date="1515287197000" expanded="true" signature="61965:62318" ph="..." />
+            <marker date="1515287197000" expanded="true" signature="61966:62303" ph="..." />
+            <marker date="1515287197000" expanded="true" signature="62028:62290" ph="..." />
+            <marker date="1515287197000" expanded="true" signature="62072:62272" ph="..." />
+            <marker date="1515287197000" expanded="true" signature="62353:62708" ph="..." />
+            <marker date="1515287197000" expanded="true" signature="62366:62693" ph="..." />
+            <marker date="1515287197000" expanded="true" signature="62414:62679" ph="..." />
+            <marker date="1515287197000" expanded="true" signature="62433:62664" ph="..." />
+            <marker date="1515287197000" expanded="true" signature="62466:62644" ph="..." />
+            <marker date="1515287197000" expanded="true" signature="62506:62610" ph="..." />
+            <marker date="1515287197000" expanded="true" signature="62527:62588" ph="..." />
           </folding>
         </state>
       </provider>
