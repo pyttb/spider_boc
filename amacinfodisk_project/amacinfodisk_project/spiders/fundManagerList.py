@@ -9,6 +9,7 @@ import datetime
 import json
 import requests
 
+
 class FundmanagerlistSpider(scrapy.Spider):
     name = 'fundManagerList'
     allowed_domains = ['gs.amac.org.cn']
@@ -25,23 +26,18 @@ class FundmanagerlistSpider(scrapy.Spider):
             'Host': 'gs.amac.org.cn',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8'
     }
-    # payload = {'page': '0', 'size': '20'}
     payload={}
     body={}
 
     def start_requests(self):
         for url in self.start_urls:
-            # yield scrapy.Request(url=url, callback=self.parse,meta=self.payload,body=json.dumps(self.payload))
-            # yield scrapy.Request(url=url, callback=self.parse,headers=self.headers)
             print "url:"+url
-            # yield scrapy.FormRequest(url=url,method='POST',callback=self.parse,formdata={},headers=self.headers)
-            yield scrapy.Request(url=url,method='POST',callback=self.parse,headers=self.headers, body=urllib.urlencode(self.body))
-            # yield scrapy.Request(url=url, callback=self.parse, meta=self.payload, body=json.dumps(self.payload),headers=self.headers)
+            # yield scrapy.Request(url=url,method='POST',callback=self.parse, meta=self.payload,body=json.dumps(self.payload),headers=self.headers)
+            yield scrapy.FormRequest(url=url,method='POST',headers=self.headers,body=json.dumps(self.payload),callback=self.parse)
 
-            # r=scrapy.FormRequest(url=url,method='POST',headers=headers)
 
 
     def parse(self, response):
 
-        print (response)
+        print (response.text)
         pass
