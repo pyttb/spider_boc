@@ -87,6 +87,20 @@ class AmacInfoLoaderItem(ItemLoader):
     自定义ITEM，取每个字段数组的第一个值
     '''
     default_output_processor = TakeFirst()
+    #预定义各个模块的列名，解析item时直接使用
+    ManagerListInfoItem_columns = {"id",
+                                   "managerName",
+                                   "artificialPersonName",
+                                   "registerNo",
+                                   "establishDate",
+                                   "managerHasProduct",
+                                   "url",
+                                   "registerDate",
+                                   "registerAddress",
+                                   "registerProvince",
+                                   "registerCity",
+                                   "regAdrAgg",
+                                   "primaryInvestType"}
 
 
 class ManagerListInfoItem(scrapy.Item):
@@ -94,23 +108,25 @@ class ManagerListInfoItem(scrapy.Item):
     保存ManagerListInfo信息
     '''
     qry_date = scrapy.Field(input_processor=MapCompose(date_parse))
-    id=scrapy.Field()
-    managerName=scrapy.Field()
-    artificialPersonName=scrapy.Field()
-    registerNo=scrapy.Field()
-    establishDate=scrapy.Field(input_processor=MapCompose(date_parse_from_digital))
-    managerHasProduct=scrapy.Field()
-    url=scrapy.Field()
-    registerDate=scrapy.Field(input_processor=MapCompose(date_parse_from_digital))
-    registerAddress=scrapy.Field()
-    registerProvince=scrapy.Field()
-    registerCity=scrapy.Field()
-    regAdrAgg=scrapy.Field()
-    primaryInvestType=scrapy.Field()
+    id = scrapy.Field()
+    managerName = scrapy.Field()
+    artificialPersonName = scrapy.Field()
+    registerNo = scrapy.Field()
+    establishDate = scrapy.Field(input_processor=MapCompose(date_parse_from_digital))
+    managerHasProduct = scrapy.Field()
+    url = scrapy.Field()
+    registerDate = scrapy.Field(input_processor=MapCompose(date_parse_from_digital))
+    registerAddress = scrapy.Field()
+    registerProvince = scrapy.Field()
+    registerCity = scrapy.Field()
+    regAdrAgg = scrapy.Field()
+    primaryInvestType = scrapy.Field()
+
 
 
 
 class AmacinfodiskProjectItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
+
     pass

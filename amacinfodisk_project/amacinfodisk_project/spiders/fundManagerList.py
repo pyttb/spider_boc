@@ -2,7 +2,6 @@
 import urllib
 
 import scrapy
-from amacinfodisk.items import AmacInfoLoaderItem,ManagerListInfoItem,AmacinfodiskProjectItem
 from bs4 import BeautifulSoup
 import urllib2
 import datetime
@@ -11,6 +10,9 @@ import requests
 import logging
 import time
 import urlparse
+from amacinfodisk_project.items import AmacinfodiskProjectItem
+from amacinfodisk_project.items import AmacInfoLoaderItem
+from amacinfodisk_project.items import ManagerListInfoItem
 
 class FundmanagerlistSpider(scrapy.Spider):
     name = 'fundManagerList'
@@ -53,7 +55,7 @@ class FundmanagerlistSpider(scrapy.Spider):
         # 根据页面totalPages，轮循
         if totalPages and totalElements:
             # for page in range(0, totalPages - 1):  # 页面提交-1
-            for page in range(0, 10):  # 页面提交-1
+            for page in range(0, 2):  # 页面提交-1
                 localpayload = {'page': page, 'size': size}
                 page_url = "?page="+str(page)+"&size="+str(size);
 
@@ -65,21 +67,33 @@ class FundmanagerlistSpider(scrapy.Spider):
     def parseFundManagerList(self, response):
         # time.sleep(5)
 
-        # rows = json.loads(response.text).get("content")
-        # qry_date = datetime.datetime.now().date()
-        # if rows:
-        #     for row in rows:
-        #         list_item = AmacInfoLoaderItem(item=ManagerListInfoItem(), response=response)
-        #         list_item.add_value('qry_date', qry_date)
-        #         list_item.add_value('id', row.get("id"))
-        #         list_item.add_value('managerName', row.get("managerName"))
-        #
-        #         #尝试取得DICT键值对，后面改成统一的方式
-        #         for key in row.keys():
-        #             list_item.add_value(key,row.get(key))
-        #
-        #         item = list_item.load_item()
-        #         yield item
+        rows = json.loads(response.text).get("content")
+        qry_date = datetime.datetime.now().date()
+        if rows:
+            for row in rows:
+                list_item = AmacInfoLoaderItem(item=ManagerListInfoItem(), response=response)
+                # list_item.add_value('qry_date', qry_date)
+                # list_item.add_value('id', row.get("id"))
+                # list_item.add_value('managerName', row.get("managerName"))
+                # list_item.add_value('artificialPersonName', row.get("artificialPersonName"))
+                # list_item.add_value('registerNo', row.get("registerNo"))
+                # list_item.add_value('establishDate', row.get("establishDate"))
+                # list_item.add_value('managerHasProduct', row.get("managerHasProduct"))
+                # list_item.add_value('url', row.get("url"))
+                # list_item.add_value('registerDate', row.get("registerDate"))
+                # list_item.add_value('registerAddress', row.get("registerAddress"))
+                # list_item.add_value('registerProvince', row.get("registerProvince"))
+                # list_item.add_value('registerCity', row.get("registerCity"))
+                # list_item.add_value('regAdrAgg', row.get("regAdrAgg"))
+                # list_item.add_value('primaryInvestType', row.get("primaryInvestType"))
+
+                #尝试取得DICT键值对，后面改成统一的方式
+                for key in row.keys():
+                    if key in list_item.ManagerListInfoItem_columns:
+                        list_item.add_value(key,row.get(key))
+
+                item = list_item.load_item()
+                yield item
 
 
 
