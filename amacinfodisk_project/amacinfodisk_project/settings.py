@@ -91,7 +91,8 @@ ROBOTSTXT_OBEY = False
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
 #    'amacinfodisk_project.pipelines.AmacinfodiskProjectPipeline': 300,
-    "amacinfodisk_project.pipelines.AmacinfodiskProjectPipeline": 1,
+#     "amacinfodisk_project.pipelines.AmacinfodiskProjectPipeline": 1,
+    "amacinfodisk_project.pipelines.AmacinfodiskTwistedPipeline": 1,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

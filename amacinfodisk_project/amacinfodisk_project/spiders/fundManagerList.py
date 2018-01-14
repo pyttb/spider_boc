@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import urllib
-
+import sys
 import scrapy
 from bs4 import BeautifulSoup
 import urllib2
@@ -15,6 +15,9 @@ from amacinfodisk_project.items import AmacInfoLoaderItem
 from amacinfodisk_project.items import ManagerListInfoItem
 
 class FundmanagerlistSpider(scrapy.Spider):
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
     name = 'fundManagerList'
     allowed_domains = ['gs.amac.org.cn']
     # start_urls = ['http://gs.amac.org.cn/amac-infodisc/res/pof/manager/managerList.html']
@@ -72,7 +75,7 @@ class FundmanagerlistSpider(scrapy.Spider):
         if rows:
             for row in rows:
                 list_item = AmacInfoLoaderItem(item=ManagerListInfoItem(), response=response)
-                # list_item.add_value('qry_date', qry_date)
+                list_item.add_value('qry_date', qry_date)
                 # list_item.add_value('id', row.get("id"))
                 # list_item.add_value('managerName', row.get("managerName"))
                 # list_item.add_value('artificialPersonName', row.get("artificialPersonName"))
