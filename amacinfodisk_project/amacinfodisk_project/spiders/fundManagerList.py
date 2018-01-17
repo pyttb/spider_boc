@@ -62,8 +62,8 @@ class FundmanagerlistSpider(scrapy.Spider):
         self.log(message='totalElements:{},totalPages:{}'.format(totalElements, totalPages), level=logging.INFO)
         # 根据页面totalPages，轮循
         if totalPages and totalElements:
-            for page in range(0, totalPages - 1):  # 页面提交-1
-            # for page in range(0, 2):  # 页面提交-1
+            for page in range(0, totalPages):  # 页面提交
+            # for page in range(0, 2):  # 页面提交
                 localpayload = {'page': page, 'size': size}
                 localpayload = dict(localpayload,**self.payload)
                 page_url = "?page="+str(page)+"&size="+str(size);
