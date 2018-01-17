@@ -23,7 +23,8 @@ class FundmanagerlistSpider(scrapy.Spider):
     allowed_domains = ['gs.amac.org.cn']
     # start_urls = ['http://gs.amac.org.cn/amac-infodisc/res/pof/manager/managerList.html']
     # start_urls = "http://gs.amac.org.cn/amac-infodisc/api/pof/manager"
-    start_urls = ['http://gs.amac.org.cn/amac-infodisc/api/pof/manager']
+    # start_urls = ['http://gs.amac.org.cn/amac-infodisc/api/pof/manager']
+    start_urls = ['http://gs.amac.org.cn/amac-infodisc/api/pof/manager?&page=0&size=20']
     base_url= 'http://gs.amac.org.cn/amac-infodisc/api/pof/manager'
 
     headers = {
@@ -36,7 +37,7 @@ class FundmanagerlistSpider(scrapy.Spider):
         'Host': 'gs.amac.org.cn',
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8'
     }
-    payload = {'page': 0, 'size': 20}  # 失信后面需要加上参数
+    payload = {'page': 0, 'size': 20, 'creditInfo':'isLostContactMechanism'}  # 失信后面需要加上参数 {"creditInfo":"isLostContactMechanism"}
     body = {}
 
     def start_requests(self):
@@ -45,7 +46,7 @@ class FundmanagerlistSpider(scrapy.Spider):
             # yield scrapy.Request(url=url,method='POST',callback=self.parse, meta=self.payload,
             # body=json.dumps(self.payload),headers=self.headers)
             yield scrapy.Request(url=url, method='POST', headers=self.headers,
-                                 body=json.dumps(self.payload),
+                                 body=json.dumps(self.payload), meta=self.payload,
                                  callback=self.parse_pages_loop,dont_filter=True)
 
     def parse_pages_loop(self, response):
