@@ -10,9 +10,10 @@ import requests
 import logging
 import time
 import urlparse
-from amacinfodisk_project.items import AmacinfodiskProjectItem
-from amacinfodisk_project.items import AmacInfoLoaderItem
-from amacinfodisk_project.items import ManagerListInfoItem
+import re
+from amacinfodisk_project.items import AmacinfodiskProjectItem,AmacInfoLoaderItem,ManagerListInfoItem,ManagerCreditInfoItem
+from bs4 import BeautifulSoup
+
 
 class FundmanagerlistSpider(scrapy.Spider):
     reload(sys)
@@ -24,6 +25,7 @@ class FundmanagerlistSpider(scrapy.Spider):
     # start_urls = "http://gs.amac.org.cn/amac-infodisc/api/pof/manager"
     start_urls = ['http://gs.amac.org.cn/amac-infodisc/api/pof/manager']
     base_url= 'http://gs.amac.org.cn/amac-infodisc/api/pof/manager'
+
     headers = {
         'content-type': 'application/json;charset=UTF-8',
         'referer': 'http://gs.amac.org.cn/amac-infodisc/res/pof/manager/index.html',
@@ -34,7 +36,7 @@ class FundmanagerlistSpider(scrapy.Spider):
         'Host': 'gs.amac.org.cn',
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8'
     }
-    payload = {'page': 0, 'size': 20}  # 失信加上参数
+    payload = {'page': 0, 'size': 20}  # 失信后面需要加上参数
     body = {}
 
     def start_requests(self):
@@ -42,8 +44,9 @@ class FundmanagerlistSpider(scrapy.Spider):
             print "url:" + url
             # yield scrapy.Request(url=url,method='POST',callback=self.parse, meta=self.payload,
             # body=json.dumps(self.payload),headers=self.headers)
-            yield scrapy.Request(url=url, method='POST', headers=self.headers, body=json.dumps(self.payload),
-                                     callback=self.parse_pages_loop,dont_filter=True)
+            yield scrapy.Request(url=url, method='POST', headers=self.headers,
+                                 body=json.dumps(self.payload),
+                                 callback=self.parse_pages_loop,dont_filter=True)
 
     def parse_pages_loop(self, response):
 
@@ -64,7 +67,8 @@ class FundmanagerlistSpider(scrapy.Spider):
 
                 page_full_url=urlparse.urljoin(self.base_url, page_url);
                 logging.info("now visting: "+page_full_url)
-                yield scrapy.Request(url=page_full_url, method='POST', headers=self.headers, body=json.dumps(localpayload),
+                yield scrapy.Request(url=page_full_url, method='POST', headers=self.headers,
+                                     body=json.dumps(localpayload),
                                      callback=self.parseFundManagerList, dont_filter=True)
 
     def parseFundManagerList(self, response):
@@ -98,8 +102,70 @@ class FundmanagerlistSpider(scrapy.Spider):
                 item = list_item.load_item()
                 yield item
 
+                detail_url = row.get("url")
+                if detail_url:
+                    # url_link = urlparse.urljoin(self.base_url,"/",detail_url);
+                    url_link="http://gs.amac.org.cn/amac-infodisc/res/pof/manager/"+detail_url;
+                    yield scrapy.Request(url=url_link, method='GET', headers=self.headers,
+                                     body=json.dumps({}),
+                                     callback=self.parseFundManagerPublicInfo, dont_filter=True)
 
 
+    def parseFundManagerPublicInfo(self, response):
 
-        print(response)
-        pass
+
+        #/html/body/div/div[2]/div/table/tbody/tr[1]/td[2]/table/tbody/tr[1]/td
+        # "http://gs.amac.org.cn/amac-infodisc/res/pof/manager/101000000138.html"
+
+        # soup.prettify()
+
+        #selector="body > div > div.g-body > div > table > tbody > tr:nth-child(6) > td.td-content"
+        #xpath="/html/body/div/div[2]/div/table/tbody/tr[6]/td[2]"
+        #soup=BeautifulSoup(response.text,'lxml')
+        #soup.find_all('td', attrs={'class': 'td-content', 'colspan': '3'})
+
+        # response.xpath("/html/body/div/div[2]/div/table/tbody/tr[1]/td[2]/table/tr[1]/td/text()").extract_first('').strip()
+        # response.xpath("/html/body/div/div[2]/div/table/tbody/tr[1]/td[2]/table/tbody/tr[2]/td/text()")
+        # response.xpath("/html/body/div/div[2]/div/table/tbody/tr[6]/td[2]/text()")
+        # response.xpath("/html/body/div/div[2]/div/table/tbody/tr[1]/td[2]/table/tr[1]/td/text()").extract_regex(u'失联机构').strip()
+        # response.xpath("/html/body/div/div[2]/div/table/tbody/tr[1]/td[2]/table/tbody/tr[1]/td/span/text()")
+
+        shilianString="";
+        yichangString="";
+        organization_code="";
+        managerName="";
+
+        if re.search(u"失联机构.*\n.*", response.text):
+            shilianString = re.search(u"失联机构.*\n.*", response.text).group()
+            shilianString = shilianString.replace("\s",'')
+            shilianString = shilianString.replace("</span>&nbsp;",'')
+            shilianString = shilianString.replace("\n", '')
+            shilianString = shilianString.replace("\t", '')
+            shilianString = shilianString.replace("<a.*/a>", '')    #去掉链接字符串
+        if re.search(u"异常机构.*\n.*", response.text):
+            yichangString = re.search(u"异常机构.*\n.*", response.text).group()
+            yichangString = yichangString.replace("\s",'')
+            yichangString = yichangString.replace("</span>&nbsp;",'')
+            yichangString = yichangString.replace("\n", '')
+            yichangString = yichangString.replace("\t", '')
+
+        # response.xpath("/html/body/div/div[2]/div/table/tbody/tr[6]/td[2]")
+        # organization_code = response.xpath('//div[@class="m-manager-list m-list-details"]/table/tbody/tr[6]/td[2]/text()').extract_first('').strip()
+        if response.xpath("/html/body/div/div[2]/div/table/tbody/tr[6]/td[2]/text()"):
+            organization_code = response.xpath("/html/body/div/div[2]/div/table/tbody/tr[6]/td[2]/text()").extract_first('').strip()
+
+        if response.xpath('//*[@id="complaint1"]/text()'):
+            managerName= response.xpath('//*[@id="complaint1"]/text()').extract_first('').strip()
+            managerName = managerName.replace("&nbsp", '')
+            managerName = managerName.replace("\s", '')
+
+        qry_date = datetime.datetime.now().date()
+        list_item = AmacInfoLoaderItem(item=ManagerCreditInfoItem(), response=response)
+        list_item.add_value('qry_date', qry_date)
+        list_item.add_value('managerName', managerName)
+        list_item.add_value('shilian_jigou', shilianString)
+        list_item.add_value('yichang_jigou', yichangString)
+        list_item.add_value('organization_code', organization_code)
+
+        item = list_item.load_item()
+        yield item

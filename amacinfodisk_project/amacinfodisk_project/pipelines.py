@@ -74,7 +74,10 @@ class AmacinfodiskTwistedPipeline(object):
         :param item:
         :return:
         '''
+        # tabname = item["tabname"]
         insert = 'insert into amac.manager_list_info('
+        if 'organization_code' in item:
+            insert = insert.replace('manager_list_info', 'manager_credit_info')
 
         value = 'values('
         keys = item.keys()

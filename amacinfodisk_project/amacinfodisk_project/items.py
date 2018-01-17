@@ -121,8 +121,18 @@ class ManagerListInfoItem(scrapy.Item):
     registerCity = scrapy.Field()
     regAdrAgg = scrapy.Field()
     primaryInvestType = scrapy.Field()
+    # tabname = "manager_list_info"
 
-
+class ManagerCreditInfoItem(scrapy.Item):
+    '''
+    保存ManagerListInfo信息
+    '''
+    qry_date = scrapy.Field(input_processor=MapCompose(date_parse))
+    managerName = scrapy.Field()
+    shilian_jigou = scrapy.Field()
+    yichang_jigou = scrapy.Field()
+    organization_code = scrapy.Field()
+    # tabname = "manager_credit_info"
 
 
 class AmacinfodiskProjectItem(scrapy.Item):
