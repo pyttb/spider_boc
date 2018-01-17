@@ -11,7 +11,7 @@ import datetime
 import re
 from scrapy.loader import ItemLoader
 from scrapy.loader.processors import TakeFirst, MapCompose, Join
-
+import time
 
 def delete_space(value):
     '''
@@ -45,6 +45,20 @@ def date_parse(value):
     return str(value)
 
 
+def date_parse_from_digital(value):
+    '''
+    转换为日期类型
+    :param value:
+    :return:
+    '''
+    try:
+        value = time.strftime("%Y-%m-%d", time.localtime(float(value)/1000))
+    except Exception as e:
+        value = datetime.datetime.now().date()
+    return str(value)
+
+
+
 def return_value(value):
     '''
     保持原来的数值不变
@@ -73,27 +87,56 @@ class AmacInfoLoaderItem(ItemLoader):
     自定义ITEM，取每个字段数组的第一个值
     '''
     default_output_processor = TakeFirst()
+    #预定义各个模块的列名，解析item时直接使用
+    ManagerListInfoItem_columns = {"id",
+                                   "managerName",
+                                   "artificialPersonName",
+                                   "registerNo",
+                                   "establishDate",
+                                   "managerHasProduct",
+                                   "url",
+                                   "registerDate",
+                                   "registerAddress",
+                                   "registerProvince",
+                                   "registerCity",
+                                   "regAdrAgg",
+                                   "primaryInvestType"}
 
 
 class ManagerListInfoItem(scrapy.Item):
     '''
     保存ManagerListInfo信息
     '''
-    qry_date = scrapy.Field(
-        input_processor=MapCompose(date_parse)
-    )
-    qry_id = scrapy.Field(
-        input_processor=MapCompose(delete_plus)
-    )
-    mgr_corp_name = scrapy.Field()
-    partner_name = scrapy.Field()
-    reg_location = scrapy.Field()
-    reg_number = scrapy.Field()
-    buildup_time = scrapy.Field()
-    reg_time = scrapy.Field()
+    qry_date = scrapy.Field(input_processor=MapCompose(date_parse))
+    id = scrapy.Field()
+    managerName = scrapy.Field()
+    artificialPersonName = scrapy.Field()
+    registerNo = scrapy.Field()
+    establishDate = scrapy.Field(input_processor=MapCompose(date_parse_from_digital))
+    managerHasProduct = scrapy.Field()
+    url = scrapy.Field()
+    registerDate = scrapy.Field(input_processor=MapCompose(date_parse_from_digital))
+    registerAddress = scrapy.Field()
+    registerProvince = scrapy.Field()
+    registerCity = scrapy.Field()
+    regAdrAgg = scrapy.Field()
+    primaryInvestType = scrapy.Field()
+    # tabname = "manager_list_info"
+
+class ManagerCreditInfoItem(scrapy.Item):
+    '''
+    保存ManagerListInfo信息
+    '''
+    qry_date = scrapy.Field(input_processor=MapCompose(date_parse))
+    managerName = scrapy.Field()
+    shilian_jigou = scrapy.Field()
+    yichang_jigou = scrapy.Field()
+    organization_code = scrapy.Field()
+    # tabname = "manager_credit_info"
 
 
 class AmacinfodiskProjectItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
+
     pass
