@@ -60,8 +60,8 @@ class FundmanagerlistSpider(scrapy.Spider):
         self.log(message='totalElements:{},totalPages:{}'.format(totalElements, totalPages), level=logging.INFO)
         # 根据页面totalPages，轮循
         if totalPages and totalElements:
-            # for page in range(0, totalPages - 1):  # 页面提交-1
-            for page in range(0, 2):  # 页面提交-1
+            for page in range(0, totalPages - 1):  # 页面提交-1
+            # for page in range(0, 2):  # 页面提交-1
                 localpayload = {'page': page, 'size': size}
                 page_url = "?page="+str(page)+"&size="+str(size);
 
@@ -158,6 +158,7 @@ class FundmanagerlistSpider(scrapy.Spider):
             managerName= response.xpath('//*[@id="complaint1"]/text()').extract_first('').strip()
             managerName = managerName.replace("&nbsp", '')
             managerName = managerName.replace("\s", '')
+            managerName = managerName.replace(" ", '')
 
         qry_date = datetime.datetime.now().date()
         list_item = AmacInfoLoaderItem(item=ManagerCreditInfoItem(), response=response)

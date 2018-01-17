@@ -93,7 +93,7 @@ class AmacinfodiskTwistedPipeline(object):
         cursor.execute(sql)
 
         # 添加机构代码到已爬清单中,应该要加上时间戳？
-        self.conn.sadd('amac_query_record', item['id'])
+        # self.conn.sadd('amac_query_record', item['id'])
 
 
 
