@@ -37,7 +37,8 @@ class FundmanagerlistSpider(scrapy.Spider):
         'Host': 'gs.amac.org.cn',
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8'
     }
-    payload = {'page': 0, 'size': 20, 'creditInfo':'isLostContactMechanism'}  # 失信后面需要加上参数 {"creditInfo":"isLostContactMechanism"}
+    # payload = {'page': 0, 'size': 20, 'creditInfo':'isLostContactMechanism'}  # 失信后面需要加上参数 {"creditInfo":"isLostContactMechanism"}
+    payload = {'creditInfo': 'isLostContactMechanism'}
     body = {}
 
     def start_requests(self):
@@ -46,7 +47,7 @@ class FundmanagerlistSpider(scrapy.Spider):
             # yield scrapy.Request(url=url,method='POST',callback=self.parse, meta=self.payload,
             # body=json.dumps(self.payload),headers=self.headers)
             yield scrapy.Request(url=url, method='POST', headers=self.headers,
-                                 body=json.dumps(self.payload), meta=self.payload,
+                                 body=json.dumps(self.payload),
                                  callback=self.parse_pages_loop,dont_filter=True)
 
     def parse_pages_loop(self, response):
@@ -64,6 +65,7 @@ class FundmanagerlistSpider(scrapy.Spider):
             for page in range(0, totalPages - 1):  # 页面提交-1
             # for page in range(0, 2):  # 页面提交-1
                 localpayload = {'page': page, 'size': size}
+                localpayload = dict(localpayload,**self.payload)
                 page_url = "?page="+str(page)+"&size="+str(size);
 
                 page_full_url=urlparse.urljoin(self.base_url, page_url);
