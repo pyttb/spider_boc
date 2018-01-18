@@ -13,6 +13,22 @@ from scrapy.loader import ItemLoader
 from scrapy.loader.processors import TakeFirst, MapCompose, Join
 import time
 
+def detele_nomean_signs(value):
+    '''
+    删除字符串中的所有空格
+    :param value:
+    :return:
+    '''
+    value = str(value).replace("\s",'')
+    value = value.replace("</span>&nbsp;",'')
+    value = value.replace("&nbsp", '')
+    value = value.replace("\n", '')
+    value = value.replace("\t", '')
+    value = value.replace("<a.*/a>", '')
+    value = value.replace("\r", '')
+    return str(value).replace(' ', '').strip()
+
+
 def delete_space(value):
     '''
     删除字符串中的所有空格
@@ -20,7 +36,6 @@ def delete_space(value):
     :return:
     '''
     return str(value).replace(' ', '').strip()
-
 
 def delete_plus(value):
     '''
@@ -128,9 +143,9 @@ class ManagerCreditInfoItem(scrapy.Item):
     保存ManagerListInfo信息
     '''
     qry_date = scrapy.Field(input_processor=MapCompose(date_parse))
-    managerName = scrapy.Field()
-    shilian_jigou = scrapy.Field()
-    yichang_jigou = scrapy.Field()
+    managerName = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))
+    shilian_jigou = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))
+    yichang_jigou = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))
     organization_code = scrapy.Field()
     # tabname = "manager_credit_info"
 

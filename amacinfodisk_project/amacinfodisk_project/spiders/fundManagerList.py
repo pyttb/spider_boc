@@ -133,24 +133,24 @@ class FundmanagerlistSpider(scrapy.Spider):
         # response.xpath("/html/body/div/div[2]/div/table/tbody/tr[1]/td[2]/table/tr[1]/td/text()").extract_regex(u'失联机构').strip()
         # response.xpath("/html/body/div/div[2]/div/table/tbody/tr[1]/td[2]/table/tbody/tr[1]/td/span/text()")
 
-        shilianString="";
-        yichangString="";
+        shilian_jigou="";
+        yichang_jigou="";
         organization_code="";
         managerName="";
 
         if re.search(u"失联机构.*\n.*", response.text):
-            shilianString = re.search(u"失联机构.*\n.*", response.text).group()
-            shilianString = shilianString.replace("\s",'')
-            shilianString = shilianString.replace("</span>&nbsp;",'')
-            shilianString = shilianString.replace("\n", '')
-            shilianString = shilianString.replace("\t", '')
-            shilianString = shilianString.replace("<a.*/a>", '')    #去掉链接字符串
+            shilian_jigou = re.search(u"失联机构.*\n.*", response.text).group()
+            # shilian_jigou = shilian_jigou.replace("\s",'')
+            # shilian_jigou = shilian_jigou.replace("</span>&nbsp;",'')
+            # shilian_jigou = shilian_jigou.replace("\n", '')
+            # shilian_jigou = shilian_jigou.replace("\t", '')
+            # shilian_jigou = shilian_jigou.replace("<a.*/a>", '')    #去掉链接字符串
         if re.search(u"异常机构.*\n.*", response.text):
-            yichangString = re.search(u"异常机构.*\n.*", response.text).group()
-            yichangString = yichangString.replace("\s",'')
-            yichangString = yichangString.replace("</span>&nbsp;",'')
-            yichangString = yichangString.replace("\n", '')
-            yichangString = yichangString.replace("\t", '')
+            yichang_jigou = re.search(u"异常机构.*\n.*", response.text).group()
+            # yichang_jigou = yichang_jigou.replace("\s",'')
+            # yichang_jigou = yichang_jigou.replace("</span>&nbsp;",'')
+            # yichang_jigou = yichang_jigou.replace("\n", '')
+            # yichang_jigou = yichang_jigou.replace("\t", '')
 
         # response.xpath("/html/body/div/div[2]/div/table/tbody/tr[6]/td[2]")
         # organization_code = response.xpath('//div[@class="m-manager-list m-list-details"]/table/tbody/tr[6]/td[2]/text()').extract_first('').strip()
@@ -159,16 +159,16 @@ class FundmanagerlistSpider(scrapy.Spider):
 
         if response.xpath('//*[@id="complaint1"]/text()'):
             managerName= response.xpath('//*[@id="complaint1"]/text()').extract_first('').strip()
-            managerName = managerName.replace("&nbsp", '')
-            managerName = managerName.replace("\s", '')
-            managerName = managerName.replace(" ", '')
+            # managerName = managerName.replace("&nbsp", '')
+            # managerName = managerName.replace("\s", '')
+            # managerName = managerName.replace(" ", '')
 
         qry_date = datetime.datetime.now().date()
         list_item = AmacInfoLoaderItem(item=ManagerCreditInfoItem(), response=response)
         list_item.add_value('qry_date', qry_date)
         list_item.add_value('managerName', managerName)
-        list_item.add_value('shilian_jigou', shilianString)
-        list_item.add_value('yichang_jigou', yichangString)
+        list_item.add_value('shilian_jigou', shilian_jigou)
+        list_item.add_value('yichang_jigou', yichang_jigou)
         list_item.add_value('organization_code', organization_code)
 
         item = list_item.load_item()
