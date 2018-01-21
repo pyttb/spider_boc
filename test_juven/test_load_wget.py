@@ -3,12 +3,15 @@
 import os
 # os.system('wget -r --spider http://diameizi.diandian.com 2>|log.txt')
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 
 url="http://www.chinamoney.com.cn/fe/CMS5_G20306002Resource?info=43424497;res=1516257745649208267055;download="
-filename="盐城.pdf"
-
+filename=u"盐城.pdf"
 print ('wget -c "'+url+ '" -O '+filename)
-os.system('wget -c "'+url+ '" -O '+filename)
+os.system('wget -c "'+url+ '" -O  '+filename.encode('gbk'))
 
 
 
