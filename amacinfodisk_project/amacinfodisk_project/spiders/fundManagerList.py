@@ -46,19 +46,21 @@ class FundmanagerlistSpider(scrapy.Spider):
     ]
     #payload = {'creditInfo': "identification"} # 失联机构
     def start_requests(self):
+        #六个模块仅payload不一样，初始url一致
         for payload in self.payload_all:
             print "url:" + self.start_urls
             yield scrapy.Request(url=self.start_urls, method='POST', headers=self.headers,
                                  body=json.dumps(payload),
                                  callback=self.parse_pages_loop,
                                  meta= {'payload':payload},dont_filter=True)
-
+    #解析当前payload对应页面，拿到json包
     def parse_pages_loop(self, response):
         # "totalElements":22565, "totalPages":2257, "size":10
         # json转化成python dict
         js = json.loads(response.text)
         totalPages = js.get("totalPages")
         payload = response.meta['payload']
+        #根据json数据中页面数，循环
         for page in range(0, totalPages):  # 页面提交
                 # for page in range(0, 2):  # 页面提交
                 page_url = 'http://gs.amac.org.cn/amac-infodisc/api/pof/manager?page=' + str(page) + '&size=20'
@@ -67,7 +69,7 @@ class FundmanagerlistSpider(scrapy.Spider):
                                      body=json.dumps(payload),
                                      callback=self.parseFundManagerList,
                                      meta={'payload': payload},dont_filter=True)
-
+    #解析具体第一层界面，得到当前页公司部分信息，通过meta=row传递给下一层
     def parseFundManagerList(self, response):
         # time.sleep(5)
         rows = json.loads(response.text).get("content")
@@ -83,18 +85,20 @@ class FundmanagerlistSpider(scrapy.Spider):
                                  callback=self.parseFundManagerPublicInfo,
                                  meta=row,
                                  dont_filter=True)
-
+    #获得具体公司链接下的页面，同时拿到上一层具体公司的其他想信息，一起传入item
     def parseFundManagerPublicInfo(self, response):
         shilian_jigou =""
         yichang_jigou =""
         organization_code =""
         dataSrc =""
+        #拿到传入的公司信息
         row = response.meta
         list_item = AmacInfoLoaderItem(item=ManagerListInfoItem(), response=response)
+        #根据ManagerListInfoItem()列名，找对应字典row中存的值
         for key in row.keys():
             if key in list_item.ManagerListInfoItem_columns:
                 list_item.add_value(key, row.get(key))
-
+        #获取诚信信息中失联机构、异常机构、组织机构代码
         if re.search(u"失联机构.*\n.*", response.text):
             shilian_jigou = re.search(u"失联机构.*\n.*", response.text).group()
         if re.search(u"异常机构.*\n.*", response.text):
