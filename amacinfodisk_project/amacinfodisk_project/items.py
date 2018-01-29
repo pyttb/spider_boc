@@ -26,6 +26,8 @@ def detele_nomean_signs(value):
     value = value.replace("\t", '')
     value = value.replace("<a.*/a>", '')
     value = value.replace("\r", '')
+    re_h = re.compile('</?\w+[^>]*>')  # HTML标签
+    value = re_h.sub('', value)     #去掉标签
     return str(value).replace(' ', '').strip()
 
 
@@ -136,8 +138,13 @@ class ManagerListInfoItem(scrapy.Item):
     registerCity = scrapy.Field()
     regAdrAgg = scrapy.Field()
     primaryInvestType = scrapy.Field()
-    shilian_jigou = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))
-    yichang_jigou = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))
+    orgInfo1 = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))    #失联机构
+    orgInfo2 = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))    #异常机构
+    orgInfo3 = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))    #重大遗漏
+    orgInfo4 = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))    #违反八条底线
+    orgInfo5 = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))    #虚假填报
+    orgInfo6 = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))    #不良诚信
+    orgInfo7 = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))    #其他诚信信息
     organization_code = scrapy.Field()
     dataSrc = scrapy.Field()
 
