@@ -37,13 +37,12 @@ class FundmanagerlistSpider(scrapy.Spider):
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8'
     }
     payload_all = [
-        #{'creditInfo': "isLostContactMechanism"}  # 失联机构
-         #,{'creditInfo': "identification"}    #异常机构
-         #, {'creditInfo': "shamStatement"}     #虚假填报
-         #,
-        {'creditInfo': "materRialOmission"}   #重大遗漏
-         #, {'creditInfo': "eightLine"}   #违反八项规定
-         #, {'creditInfo': "badCredit"}  # 相关主题存在不良记录
+        {'creditInfo': "isLostContactMechanism"}  # 失联机构
+         ,{'creditInfo': "identification"}    #异常机构
+         , {'creditInfo': "shamStatement"}     #虚假填报
+         ,{'creditInfo': "materRialOmission"}   #重大遗漏
+         , {'creditInfo': "eightLine"}   #违反八项规定
+         , {'creditInfo': "badCredit"}  # 相关主题存在不良记录
     ]
     #payload = {'creditInfo': "identification"} # 失联机构
     def start_requests(self):
