@@ -117,9 +117,11 @@ class CreditChinaSpider(scrapy.Spider):
         record_param_list_2 = []
         record_param_list_4 = []
         record_param_list_8 = []
+        hasResults=False
         for result in results:
             if result['name'] != cust:
                 continue
+            hasResults=True
             # summary
             credit_info_detail_url_append = {'encryStr': result['encryStr'].replace('\n', '')}
             credit_info_detail_url_append = urllib.urlencode(credit_info_detail_url_append)
@@ -151,6 +153,8 @@ class CreditChinaSpider(scrapy.Spider):
             record_param_url_append_8 = urllib.urlencode(record_param_url_append_8)
             record_param_list_8.append(record_param_url + record_param_url_append_8)
             record_param_list_8 = list(set(record_param_list_8))
+        if hasResults==False:
+            self.logger.warning('%s', cust + ' no results!')
         if pub_permissions_name_list != []:
             for url in pub_permissions_name_list:
                 time.sleep(random.uniform(1, 3))
