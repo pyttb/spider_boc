@@ -9,6 +9,7 @@ from twisted.enterprise import adbapi
 import MySQLdb
 import MySQLdb.cursors
 import redis
+import sys
 
 class AmacinfodiskProjectPipeline(object):
     def process_item(self, item, spider):
@@ -16,6 +17,8 @@ class AmacinfodiskProjectPipeline(object):
 
 
 class AmacinfodiskTwistedPipeline(object):
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
     '''
         调用twisted，将信息异步入库，降低对爬虫爬取速度的影响
         '''
@@ -76,9 +79,6 @@ class AmacinfodiskTwistedPipeline(object):
         '''
         # tabname = item["tabname"]
         insert = 'insert into amac.manager_list_info('
-        if 'organization_code' in item:
-            insert = insert.replace('manager_list_info', 'manager_credit_info')
-
         value = 'values('
         keys = item.keys()
         for i in xrange(0, len(keys)):
