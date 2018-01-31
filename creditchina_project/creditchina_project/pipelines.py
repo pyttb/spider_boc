@@ -8,10 +8,8 @@ from twisted.enterprise import adbapi
 import MySQLdb
 import MySQLdb.cursors
 import redis
-
+import logging
 class CreditchinaProjectPipeline(object):
-    # def process_item(self, item, spider):
-    #     return item
     def __init__(self, dbpool, conn):
         self.dbpool = dbpool
         self.conn = conn
@@ -57,7 +55,7 @@ class CreditchinaProjectPipeline(object):
         :param failure:
         :return:
         '''
-        print(failure)
+        logging.info('%s', failure)
 
     def do_insert(self, cursor, item):
         '''
@@ -79,5 +77,5 @@ class CreditchinaProjectPipeline(object):
                 insert = insert + keys[i] + ','
                 value = value + '\"' + str(item[keys[i]]).replace("\"", "\'") + '\",'
         sql = insert + value
-        print(sql)
+        logging.info('%s', sql)
         cursor.execute(sql)
