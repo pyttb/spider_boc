@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 2018-01-17 07:43:46
+-- Generation Time: 2018-01-31 12:06:48
 -- 服务器版本： 5.7.11
 -- PHP Version: 5.6.19
 
@@ -139,11 +139,7 @@ CREATE TABLE `serious_revenue_lawless_cust_list` (
   `org_code` varchar(80) DEFAULT NULL,
   `register_addr` varchar(256) DEFAULT NULL,
   `legal_person_name` varchar(80) DEFAULT NULL,
-  `legal_person_sex` varchar(10) DEFAULT NULL,
-  `legal_person_cert` varchar(80) DEFAULT NULL,
   `financing_person_name` varchar(80) DEFAULT NULL,
-  `financing_person_sex` varchar(10) DEFAULT NULL,
-  `financing_person_cert` varchar(80) DEFAULT NULL,
   `intermediary_info` varchar(1024) DEFAULT NULL,
   `case_nature` varchar(1024) DEFAULT NULL,
   `lawless_fact` text,
