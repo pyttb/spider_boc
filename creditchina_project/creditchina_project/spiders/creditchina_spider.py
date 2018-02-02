@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
+import datetime
+import logging
 import os
 import random
-import urllib
-import time
-import datetime
-import scrapy
 import sys
+import time
+import urllib
+import scrapy
 import xlrd
-
-from creditchina_project.items import CreditchinaLoaderItem, PubPermissionsNameItem, RecordParamRedItem, RecordParamAttentionItem, DishonestyBlacklistItem, SeriousRevenueLawlessCustListItem, PurchasingBadnessRecordItem
+from creditchina_project.items import CreditchinaLoaderItem, PubPermissionsNameItem, RecordParamRedItem, \
+    RecordParamAttentionItem, DishonestyBlacklistItem, SeriousRevenueLawlessCustListItem, PurchasingBadnessRecordItem
+from creditchina_project.utils.dbutils import queryAll
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -19,19 +21,33 @@ class CreditChinaSpider(scrapy.Spider):
             'creditchina_project.pipelines.CreditchinaProjectDB2Pipeline': 100,
         }
     }
+    creditchina_cust_list=[]
+    cust_list = queryAll('select name from CREDITCHINA.QUERY_CUST_LIST order BY sid ASC ')
+    for cu in list(cust_list):
+        creditchina_cust_list.append(cu[0])
     batch_date = datetime.datetime.now().date()
     allowed_domains = ['www.creditchina.gov.cn']
     creditchina_cust_path = os.path.abspath(os.path.dirname(__file__))
-    creditchina_cust_data = xlrd.open_workbook(creditchina_cust_path + '/creditchina.xlsx')
-    creditchina_cust_sheet = creditchina_cust_data.sheet_by_index(0)
-    creditchina_cust_sheet.col_values(0, 1)
-    creditchina_cust_list = creditchina_cust_sheet.col_values(0, start_rowx=1)
+    # creditchina_cust_data = xlrd.open_workbook(creditchina_cust_path + '/creditchina.xlsx')
+    # creditchina_cust_sheet = creditchina_cust_data.sheet_by_index(0)
+    # creditchina_cust_sheet.col_values(0, 1)
+    start_row=0
+    with open(creditchina_cust_path + '/record.txt',) as f_read:
+        content = f_read.readlines()
+        start_row=int(content[0])
+    f_read.close()
+    #creditchina_cust_list = creditchina_cust_sheet.col_values(0, start_rowx=start_row)
     total_len=len(creditchina_cust_list)
     def start_requests(self):
-        current_len=0
-        for creditchina_cust in self.creditchina_cust_list:
-            current_len=current_len+1
+        current_len=self.start_row
+        #for creditchina_cust in self.creditchina_cust_list:
+        for idx in range(self.start_row,self.total_len):
+            creditchina_cust=self.creditchina_cust_list[idx]
             msg= 'Current search cust is '+creditchina_cust+' ('+str(current_len)+'/'+str(self.total_len)+') '
+            current_len = current_len + 1
+            f_write = open(self.creditchina_cust_path + '/record.txt', 'w')
+            f_write.write(str(current_len))
+            f_write.close()
             self.logger.info('%s', msg)
             time.sleep(random.uniform(3,5))
             default_data = {
