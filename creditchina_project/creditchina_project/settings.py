@@ -90,9 +90,10 @@ LOG_FILE='log.txt'
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-   'creditchina_project.pipelines.CreditchinaProjectPipeline': 100,
-}
+# ITEM_PIPELINES = {
+#
+#
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -119,7 +120,14 @@ ITEM_PIPELINES = {
 MYSQL_HOST = "127.0.0.1"
 MYSQL_DBNAME = "creditchina"
 MYSQL_USER = "root"
-MYSQL_PASSWORD = "YourPass"
+MYSQL_PASSWORD = "Spp@1988"
+
+# DB2 CONFIGURE
+DB2_HOST = "127.0.0.1"
+DB2_DBNAME = "spider"
+DB2_USER = "root"
+DB2_PASSWORD = "spider"
+DB2_PORT = 50000
 
 # REDIS CONFIGURE
 REDIS_HOST = "127.0.0.1"

@@ -14,6 +14,12 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 class CreditChinaSpider(scrapy.Spider):
     name = "creditchina"
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'creditchina_project.pipelines.CreditchinaProjectDB2Pipeline': 100,
+        }
+    }
+    batch_date = datetime.datetime.now().date()
     allowed_domains = ['www.creditchina.gov.cn']
     creditchina_cust_path = os.path.abspath(os.path.dirname(__file__))
     creditchina_cust_data = xlrd.open_workbook(creditchina_cust_path + '/creditchina.xlsx')
@@ -26,7 +32,7 @@ class CreditChinaSpider(scrapy.Spider):
         for creditchina_cust in self.creditchina_cust_list:
             current_len=current_len+1
             msg= 'Current search cust is '+creditchina_cust+' ('+str(current_len)+'/'+str(self.total_len)+') '
-            self.logger.warning('%s', msg)
+            self.logger.info('%s', msg)
             time.sleep(random.uniform(3,5))
             default_data = {
                 'keyword': '%s' % creditchina_cust,
@@ -117,44 +123,41 @@ class CreditChinaSpider(scrapy.Spider):
         record_param_list_2 = []
         record_param_list_4 = []
         record_param_list_8 = []
-        hasResults=False
         for result in results:
-            if result['name'] != cust:
-                continue
-            hasResults=True
-            # summary
-            credit_info_detail_url_append = {'encryStr': result['encryStr'].replace('\n', '')}
-            credit_info_detail_url_append = urllib.urlencode(credit_info_detail_url_append)
-            credit_info_detail_list.append(credit_info_detail_url + credit_info_detail_url_append)
-            credit_info_detail_list = list(set(credit_info_detail_list))
-            # pub_permissions
-            pub_permissions_name_url_append = {'name': cust, 'page': 1, 'pageSize': 50}
-            pub_permissions_name_url_append = urllib.urlencode(pub_permissions_name_url_append)
-            pub_permissions_name_list.append(pub_permissions_name_url + pub_permissions_name_url_append)
-            pub_permissions_name_list = list(set(pub_permissions_name_list))
-            # pub_penalty
-            pub_penalty_name_url_append = {'name': cust, 'page': 1, 'pageSize': 50}
-            pub_penalty_name_url_append = urllib.urlencode(pub_penalty_name_url_append)
-            pub_penalty_name_list.append(pub_penalty_name_url + pub_penalty_name_url_append)
-            pub_penalty_name_list = list(set(pub_penalty_name_list))
-            # creditType=2 red,creditType=4 attention,creditType=8 black
-            record_param_url_append_2 = {'encryStr': result['encryStr'].replace('\n', ''), 'creditType': 2,
-                                         'dataSource': 0, 'pageNum': 1, 'pageSize': 50}
-            record_param_url_append_2 = urllib.urlencode(record_param_url_append_2)
-            record_param_list_2.append(record_param_url + record_param_url_append_2)
-            record_param_list_2 = list(set(record_param_list_2))
-            record_param_url_append_4 = {'encryStr': result['encryStr'].replace('\n', ''), 'creditType': 4,
-                                         'dataSource': 0, 'pageNum': 1, 'pageSize': 50}
-            record_param_url_append_4 = urllib.urlencode(record_param_url_append_4)
-            record_param_list_4.append(record_param_url + record_param_url_append_4)
-            record_param_list_4 = list(set(record_param_list_4))
-            record_param_url_append_8 = {'encryStr': result['encryStr'].replace('\n', ''), 'creditType': 8,
-                                         'dataSource': 0, 'pageNum': 1, 'pageSize': 50}
-            record_param_url_append_8 = urllib.urlencode(record_param_url_append_8)
-            record_param_list_8.append(record_param_url + record_param_url_append_8)
-            record_param_list_8 = list(set(record_param_list_8))
-        if hasResults==False:
-            self.logger.warning('%s', cust + ' no results!')
+            self.logger.info('Searcing name is %s, result name is %s'  %(cust,result['name']))
+            if result['name'] == cust:
+                self.logger.warning('%s', cust + ' has results.')
+                # summary
+                credit_info_detail_url_append = {'encryStr': result['encryStr'].replace('\n', '')}
+                credit_info_detail_url_append = urllib.urlencode(credit_info_detail_url_append)
+                credit_info_detail_list.append(credit_info_detail_url + credit_info_detail_url_append)
+                credit_info_detail_list = list(set(credit_info_detail_list))
+                # pub_permissions
+                pub_permissions_name_url_append = {'name': cust, 'page': 1, 'pageSize': 50}
+                pub_permissions_name_url_append = urllib.urlencode(pub_permissions_name_url_append)
+                pub_permissions_name_list.append(pub_permissions_name_url + pub_permissions_name_url_append)
+                pub_permissions_name_list = list(set(pub_permissions_name_list))
+                # pub_penalty
+                pub_penalty_name_url_append = {'name': cust, 'page': 1, 'pageSize': 50}
+                pub_penalty_name_url_append = urllib.urlencode(pub_penalty_name_url_append)
+                pub_penalty_name_list.append(pub_penalty_name_url + pub_penalty_name_url_append)
+                pub_penalty_name_list = list(set(pub_penalty_name_list))
+                # creditType=2 red,creditType=4 attention,creditType=8 black
+                record_param_url_append_2 = {'encryStr': result['encryStr'].replace('\n', ''), 'creditType': 2,
+                                             'dataSource': 0, 'pageNum': 1, 'pageSize': 50}
+                record_param_url_append_2 = urllib.urlencode(record_param_url_append_2)
+                record_param_list_2.append(record_param_url + record_param_url_append_2)
+                record_param_list_2 = list(set(record_param_list_2))
+                record_param_url_append_4 = {'encryStr': result['encryStr'].replace('\n', ''), 'creditType': 4,
+                                             'dataSource': 0, 'pageNum': 1, 'pageSize': 50}
+                record_param_url_append_4 = urllib.urlencode(record_param_url_append_4)
+                record_param_list_4.append(record_param_url + record_param_url_append_4)
+                record_param_list_4 = list(set(record_param_list_4))
+                record_param_url_append_8 = {'encryStr': result['encryStr'].replace('\n', ''), 'creditType': 8,
+                                             'dataSource': 0, 'pageNum': 1, 'pageSize': 50}
+                record_param_url_append_8 = urllib.urlencode(record_param_url_append_8)
+                record_param_list_8.append(record_param_url + record_param_url_append_8)
+                record_param_list_8 = list(set(record_param_list_8))
         if pub_permissions_name_list != []:
             for url in pub_permissions_name_list:
                 time.sleep(random.uniform(1, 3))
@@ -172,7 +175,6 @@ class CreditChinaSpider(scrapy.Spider):
                 time.sleep(random.uniform(1, 3))
                 yield scrapy.Request(url=url, callback=self.parse_record_param_url_append_8,meta={'cust': cust}, dont_filter = True)
     def parse_pub_permissions_name(self, response):
-        batch_date = datetime.datetime.now().date()
         cust = response.meta['cust']
         resp=response.text
         if eval(resp.replace('null', 'None').replace('false', 'None').replace('true', 'None')).get('msg'):
@@ -183,7 +185,7 @@ class CreditChinaSpider(scrapy.Spider):
         if results!=None and len(results)>0:
             for result in results:
                 item = CreditchinaLoaderItem(item=PubPermissionsNameItem(), response=response)
-                item.add_value('batch_date', batch_date)
+                item.add_value('batch_date', self.batch_date)
                 item.add_value('cust_name', cust)
                 item.add_value('adm_license_writ_no', result['xkWsh'])
                 item.add_value('audit_type', result['xkSplb'])
@@ -199,7 +201,7 @@ class CreditChinaSpider(scrapy.Spider):
                 yield item.load_item()
         else:
             item = CreditchinaLoaderItem(item=PubPermissionsNameItem(), response=response)
-            item.add_value('batch_date', batch_date)
+            item.add_value('batch_date', self.batch_date)
             item.add_value('cust_name', cust)
             item.add_value('adm_license_writ_no', '')
             item.add_value('audit_type', '')
@@ -215,7 +217,6 @@ class CreditChinaSpider(scrapy.Spider):
             yield item.load_item()
     #red
     def parse_record_param_url_append_2(self, response):
-        batch_date = datetime.datetime.now().date()
         cust = response.meta['cust']
         resp=response.text
         results=None
@@ -229,7 +230,7 @@ class CreditChinaSpider(scrapy.Spider):
             for result in results:
                 if result['数据类别'] == 'A级纳税人':
                     item = CreditchinaLoaderItem(item=RecordParamRedItem(), response=response)
-                    item.add_value('batch_date', batch_date)
+                    item.add_value('batch_date', self.batch_date)
                     item.add_value('cust_name', cust)
                     item.add_value('data_source', result['数据来源'])
                     item.add_value('no', result['序号'])
@@ -241,7 +242,7 @@ class CreditChinaSpider(scrapy.Spider):
                 else:
                     self.logger.warning('parse_record_param_url_append_2 has a new type: %s', result['数据类别'])
                     item = CreditchinaLoaderItem(item=RecordParamRedItem(), response=response)
-                    item.add_value('batch_date', batch_date)
+                    item.add_value('batch_date', self.batch_date)
                     item.add_value('cust_name', cust)
                     item.add_value('data_source', '')
                     item.add_value('no', '')
@@ -252,7 +253,7 @@ class CreditChinaSpider(scrapy.Spider):
                     yield item.load_item()
         else:
             item = CreditchinaLoaderItem(item=RecordParamRedItem(), response=response)
-            item.add_value('batch_date', batch_date)
+            item.add_value('batch_date', self.batch_date)
             item.add_value('cust_name', cust)
             item.add_value('data_source', '')
             item.add_value('no', '')
@@ -263,7 +264,6 @@ class CreditChinaSpider(scrapy.Spider):
             yield item.load_item()
 
     def parse_record_param_url_append_4(self, response):
-        batch_date = datetime.datetime.now().date()
         cust = response.meta['cust']
         resp=response.text
         if eval(resp.replace('null', 'None').replace('false', 'None').replace('true', 'None')).get('msg'):
@@ -275,7 +275,7 @@ class CreditChinaSpider(scrapy.Spider):
             for result in results:
                 if result['数据类别'] == '异常名录':
                     item = CreditchinaLoaderItem(item=RecordParamAttentionItem(), response=response)
-                    item.add_value('batch_date', batch_date)
+                    item.add_value('batch_date', self.batch_date)
                     item.add_value('cust_name', cust)
                     item.add_value('data_source', result['数据来源'])
                     item.add_value('comp_name', result['企业名称'])
@@ -290,7 +290,7 @@ class CreditChinaSpider(scrapy.Spider):
                 else:
                     self.logger.warning('parse_record_param_url_append_4 has a new type: %s', result['数据类别'])
                     item = CreditchinaLoaderItem(item=RecordParamAttentionItem(), response=response)
-                    item.add_value('batch_date', batch_date)
+                    item.add_value('batch_date', self.batch_date)
                     item.add_value('cust_name', cust)
                     item.add_value('data_source', '')
                     item.add_value('comp_name', '')
@@ -304,7 +304,7 @@ class CreditChinaSpider(scrapy.Spider):
                     yield item.load_item()
         else:
             item = CreditchinaLoaderItem(item=RecordParamAttentionItem(), response=response)
-            item.add_value('batch_date', batch_date)
+            item.add_value('batch_date', self.batch_date)
             item.add_value('cust_name', cust)
             item.add_value('data_source', '')
             item.add_value('comp_name', '')
@@ -318,7 +318,6 @@ class CreditChinaSpider(scrapy.Spider):
             yield item.load_item()
 
     def parse_record_param_url_append_8(self, response):
-        batch_date = datetime.datetime.now().date()
         cust = response.meta['cust']
         resp=response.text
         if eval(resp.replace('null', 'None').replace('false', 'None').replace('true', 'None')).get('msg'):
@@ -330,7 +329,7 @@ class CreditChinaSpider(scrapy.Spider):
             for result in results:
                 if result['数据类别'] == '失信黑名单-法人':
                     item_DishonestyBlacklist = CreditchinaLoaderItem(item=DishonestyBlacklistItem(), response=response)
-                    item_DishonestyBlacklist.add_value('batch_date', batch_date)
+                    item_DishonestyBlacklist.add_value('batch_date', self.batch_date)
                     item_DishonestyBlacklist.add_value('cust_name', cust)
                     item_DishonestyBlacklist.add_value('data_source', result['数据来源'])
                     item_DishonestyBlacklist.add_value('case_no', result['案号'])
@@ -352,7 +351,7 @@ class CreditChinaSpider(scrapy.Spider):
                     yield item_DishonestyBlacklist.load_item()
                 else:
                     item_DishonestyBlacklist = CreditchinaLoaderItem(item=DishonestyBlacklistItem(), response=response)
-                    item_DishonestyBlacklist.add_value('batch_date', batch_date)
+                    item_DishonestyBlacklist.add_value('batch_date', self.batch_date)
                     item_DishonestyBlacklist.add_value('cust_name', cust)
                     item_DishonestyBlacklist.add_value('data_source', '')
                     item_DishonestyBlacklist.add_value('case_no', '')
@@ -374,7 +373,7 @@ class CreditChinaSpider(scrapy.Spider):
                     yield item_DishonestyBlacklist.load_item()
                 if result['数据类别'] == '重大税收违法案件当事人名单':
                     item_SeriousRevenueLawlessCustList = CreditchinaLoaderItem(item=SeriousRevenueLawlessCustListItem(),response=response)
-                    item_SeriousRevenueLawlessCustList.add_value('batch_date', batch_date)
+                    item_SeriousRevenueLawlessCustList.add_value('batch_date', self.batch_date)
                     item_SeriousRevenueLawlessCustList.add_value('cust_name', cust)
                     item_SeriousRevenueLawlessCustList.add_value('data_source', result['数据来源'])
                     item_SeriousRevenueLawlessCustList.add_value('taxer_name', result['纳税人名称'])
@@ -393,7 +392,7 @@ class CreditChinaSpider(scrapy.Spider):
                     yield item_SeriousRevenueLawlessCustList.load_item()
                 else:
                     item_SeriousRevenueLawlessCustList = CreditchinaLoaderItem(item=SeriousRevenueLawlessCustListItem(),response=response)
-                    item_SeriousRevenueLawlessCustList.add_value('batch_date', batch_date)
+                    item_SeriousRevenueLawlessCustList.add_value('batch_date', self.batch_date)
                     item_SeriousRevenueLawlessCustList.add_value('cust_name', cust)
                     item_SeriousRevenueLawlessCustList.add_value('data_source', '')
                     item_SeriousRevenueLawlessCustList.add_value('taxer_name', '')
@@ -412,7 +411,7 @@ class CreditChinaSpider(scrapy.Spider):
                     yield item_SeriousRevenueLawlessCustList.load_item()
                 if result['数据类别'] == '财政部采购不良记录数据':
                     item_PurchasingBadnessRecord = CreditchinaLoaderItem(item=PurchasingBadnessRecordItem(),response=response)
-                    item_PurchasingBadnessRecord.add_value('batch_date', batch_date)
+                    item_PurchasingBadnessRecord.add_value('batch_date', self.batch_date)
                     item_PurchasingBadnessRecord.add_value('cust_name', cust)
                     item_PurchasingBadnessRecord.add_value('data_source', result['数据来源'])
                     item_PurchasingBadnessRecord.add_value('supplier_name', result['供应商或代理机构名称'])
@@ -428,7 +427,7 @@ class CreditChinaSpider(scrapy.Spider):
                     yield item_PurchasingBadnessRecord.load_item()
                 else:
                     item_PurchasingBadnessRecord = CreditchinaLoaderItem(item=PurchasingBadnessRecordItem(),response=response)
-                    item_PurchasingBadnessRecord.add_value('batch_date', batch_date)
+                    item_PurchasingBadnessRecord.add_value('batch_date', self.batch_date)
                     item_PurchasingBadnessRecord.add_value('cust_name', cust)
                     item_PurchasingBadnessRecord.add_value('data_source', '')
                     item_PurchasingBadnessRecord.add_value('supplier_name', '')
@@ -446,7 +445,7 @@ class CreditChinaSpider(scrapy.Spider):
                     self.logger.warning('parse_record_param_url_append_8 has a new type: %s', result['数据类别'])
         else:
             item_DishonestyBlacklist = CreditchinaLoaderItem(item=DishonestyBlacklistItem(), response=response)
-            item_DishonestyBlacklist.add_value('batch_date', batch_date)
+            item_DishonestyBlacklist.add_value('batch_date', self.batch_date)
             item_DishonestyBlacklist.add_value('cust_name', cust)
             item_DishonestyBlacklist.add_value('data_source', '')
             item_DishonestyBlacklist.add_value('case_no', '')
@@ -468,7 +467,7 @@ class CreditChinaSpider(scrapy.Spider):
             yield item_DishonestyBlacklist.load_item()
 
             item_SeriousRevenueLawlessCustList = CreditchinaLoaderItem(item=SeriousRevenueLawlessCustListItem(),response=response)
-            item_SeriousRevenueLawlessCustList.add_value('batch_date', batch_date)
+            item_SeriousRevenueLawlessCustList.add_value('batch_date', self.batch_date)
             item_SeriousRevenueLawlessCustList.add_value('cust_name', cust)
             item_SeriousRevenueLawlessCustList.add_value('data_source', '')
             item_SeriousRevenueLawlessCustList.add_value('taxer_name', '')
@@ -487,7 +486,7 @@ class CreditChinaSpider(scrapy.Spider):
             yield item_SeriousRevenueLawlessCustList.load_item()
 
             item_PurchasingBadnessRecord = CreditchinaLoaderItem(item=PurchasingBadnessRecordItem(), response=response)
-            item_PurchasingBadnessRecord.add_value('batch_date', batch_date)
+            item_PurchasingBadnessRecord.add_value('batch_date', self.batch_date)
             item_PurchasingBadnessRecord.add_value('cust_name', cust)
             item_PurchasingBadnessRecord.add_value('data_source', '')
             item_PurchasingBadnessRecord.add_value('supplier_name', '')
