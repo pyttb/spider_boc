@@ -19,6 +19,11 @@ class FundmanagerlistSpider(scrapy.Spider):
     sys.setdefaultencoding('utf-8')
 
     name = 'fundManagerList'
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'amacinfodisk_project.pipelines.AmacinfodiskDb2Pipeline': 100,
+        }
+    }
     allowed_domains = ['gs.amac.org.cn']
     # start_urls = ['http://gs.amac.org.cn/amac-infodisc/res/pof/manager/managerList.html']
     # start_urls = "http://gs.amac.org.cn/amac-infodisc/api/pof/manager"
@@ -139,7 +144,7 @@ class FundmanagerlistSpider(scrapy.Spider):
         elif row.get('creditInfo') == "eightLine":
             dataSrc = "违反八项底线"
         else:
-            dataSrc = "相关主题存在不良记录"
+            dataSrc = "相关主题存在不良诚信记录"
 
         list_item.add_value('qry_date', qry_date)
         list_item.add_value('orgInfo1', orgInfo1)
@@ -151,5 +156,6 @@ class FundmanagerlistSpider(scrapy.Spider):
         list_item.add_value('orgInfo7', orgInfo7)
         list_item.add_value('organization_code', organization_code)
         list_item.add_value('dataSrc',dataSrc)
+        list_item.add_value('table_name', 'spider.manager_list_info')
         item = list_item.load_item()
         yield item

@@ -89,11 +89,11 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-#    'amacinfodisk_project.pipelines.AmacinfodiskProjectPipeline': 300,
-#     "amacinfodisk_project.pipelines.AmacinfodiskProjectPipeline": 1,
-    "amacinfodisk_project.pipelines.AmacinfodiskTwistedPipeline": 1,
-}
+# ITEM_PIPELINES = {
+# #    'amacinfodisk_project.pipelines.AmacinfodiskProjectPipeline': 300,
+# #     "amacinfodisk_project.pipelines.AmacinfodiskProjectPipeline": 1,
+#     "amacinfodisk_project.pipelines.AmacinfodiskTwistedPipeline": 1,
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -124,7 +124,24 @@ MYSQL_USER = "pyuser"
 #MYSQL_PASSWORD = "db2iiass"
 MYSQL_PASSWORD = "python123"
 
+
+# DB2 CONFIGURE
+DB2_HOST = "127.0.0.1"
+DB2_DBNAME = "spider"
+DB2_USER = "root"
+DB2_PASSWORD = "spider"
+DB2_PORT = 50000
+
+
 # REDIS CONFIGURE
 REDIS_HOST = "127.0.0.1"
 REDIS_PORT = "6379"
-REDIS_DB = "0"
+REDISDB = "0"
+
+
+# Configure maximum concurrent requests performed by Scrapy (default: 16)
+CONCURRENT_REQUESTS = 32
+
+#LOG_LEVEL='INFO'
+LOG_LEVEL='WARNING'
+LOG_FILE='log.txt'
