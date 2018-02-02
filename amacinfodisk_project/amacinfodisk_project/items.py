@@ -147,6 +147,7 @@ class ManagerListInfoItem(scrapy.Item):
     orgInfo7 = scrapy.Field(input_processor=MapCompose(detele_nomean_signs))    #其他诚信信息
     organization_code = scrapy.Field()
     dataSrc = scrapy.Field()
+    table_name = scrapy.Field()
 
 
 
