@@ -120,7 +120,7 @@ LOG_FILE='log.txt'
 MYSQL_HOST = "127.0.0.1"
 MYSQL_DBNAME = "creditchina"
 MYSQL_USER = "root"
-MYSQL_PASSWORD = "Spp@1988"
+MYSQL_PASSWORD = "YourPass"
 
 # DB2 CONFIGURE
 DB2_HOST = "127.0.0.1"
