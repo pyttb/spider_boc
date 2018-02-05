@@ -22,7 +22,7 @@ class CreditChinaSpider(scrapy.Spider):
         }
     }
     creditchina_cust_list=[]
-    cust_list = queryAll('select name from CREDITCHINA.QUERY_CUST_LIST order BY sid ASC ')
+    cust_list = queryAll('select name from spider.QUERY_CUST_LIST order BY sid ASC ')
     for cu in list(cust_list):
         creditchina_cust_list.append(cu[0])
     batch_date = datetime.datetime.now().date()
