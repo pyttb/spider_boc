@@ -516,3 +516,21 @@ class CreditChinaSpider(scrapy.Spider):
             item_PurchasingBadnessRecord.add_value('data_update_date', '')
             item_PurchasingBadnessRecord.add_value('table_name', 'spider.purchasing_badness_record')
             yield item_PurchasingBadnessRecord.load_item()
+            
+    def closed(self, reason):
+        '''
+        爬虫结束时退出登录状态
+        :param reason:
+        :return:
+        '''
+        if 'finished' == reason:
+            f_write = open(self.creditchina_cust_path + '/record.txt', 'w')
+            f_write.write(str(0))
+            f_write.close()
+            logging.warning('%s', '爬虫程序执行结束，即将关闭')
+        elif 'shutdown' == reason:
+            logging.warning('%s', '爬虫进程被强制中断，即将关闭')
+        elif 'cancelled' == reason:
+            logging.warning('%s', '爬虫被引擎中断，即将关闭')
+        else:
+            logging.warning('%s', '爬虫被未知原因打断，即将关闭')
