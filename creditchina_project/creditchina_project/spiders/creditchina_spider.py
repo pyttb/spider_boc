@@ -272,20 +272,6 @@ class CreditChinaSpider(scrapy.Spider):
                     yield item.load_item()
                 else:
                     self.logger.warning('parse_record_param_url_append_4 (cust name is: %s) has a new type: %s'%cust,result['数据类别'])
-        # else:
-        #     item = CreditchinaLoaderItem(item=RecordParamAttentionItem(), response=response)
-        #     item.add_value('batch_date', self.batch_date)
-        #     item.add_value('cust_name', cust)
-        #     item.add_value('data_source', '')
-        #     item.add_value('comp_name', '')
-        #     item.add_value('reg_no', '')
-        #     item.add_value('legal_person', '')
-        #     item.add_value('exception_reason_type', '')
-        #     item.add_value('set_date', '')
-        #     item.add_value('org_name', '')
-        #     item.add_value('data_update_date', '')
-        #     item.add_value('table_name', 'creditchina.cust_attention_list')
-        #     yield item.load_item()
 
     def parse_record_param_url_append_8(self, response):
         cust = response.meta['cust']
