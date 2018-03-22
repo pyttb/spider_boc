@@ -38,14 +38,26 @@ class Wdzj(scrapy.Spider):
                              body=urllib.urlencode(default_data), callback=self.start_login, dont_filter=True)
 
     def start_login(self, response):
-        yield scrapy.Request(url='https://shuju.wdzj.com/problem-list-all.html?year=', headers={},
-                             body=urllib.urlencode({}), callback=self.parse_basic_info, dont_filter=True)
+        default_data = {
+        }
+        default_headers = {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7,zh-CN;q=0.6,zh;q=0.5,zh-TW;q=0.4',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
+            'Cookie': '__jsluid=74ebcd0593de98a9575379ab6a4ac2f9; gr_user_id=dc16a530-c757-444a-b072-1150e3c34a69; UM_distinctid=16204130a584a7-038961f563d7f9-3f3c5906-144000-16204130a5a7a7; _ga=GA1.2.203097436.1520486780; _gid=GA1.2.1187354592.1521681745; CNZZDATA5008302=cnzz_eid%3D1216359861-1520466983-%26ntime%3D1521679974; Hm_lvt_9e837711961994d9830dcd3f4b45f0b3=1520471469,1521681747; _pk_ref.1.b30f=%5B%22%22%2C%22%22%2C1521681748%2C%22https%3A%2F%2Fwww.google.com%2F%22%5D; _pk_id.1.b30f=48874f764c7f544e.1520471469.4.1521681748.1521681748.; PHPSESSID=3uivd6gkh9cin9d15945rv86b7; Z6wq_e6e3_saltkey=lNCx62C5; Z6wq_e6e3_auth=29b9PXA7XiJ%2ByYIENCGk4Dez7TxZlt8pmqkhMQX2A%2FGaaZ94Yt%2B5Yv2fdZjOALIwUvniTSNYRELwQe6%2Bg02S%2F%2BEfGEiN; auth_token=2f65YHBP2QXpcrcG%2FtsqSsULJy6xZPU3zqFLgZ7iGEgeG0qAS2j3cjfrWIFnDBeShQ0Cp9zUXENp7HsJ5j%2B5MNDdtc27; uid=1468416; login_channel=1; pc_login=1; route=44015f5142c139331e0c6edebb46097b',
+            'Upgrade-Insecure-Requests': '1',
+            'Connection': 'keep-alive',
+            'Host': 'shuju.wdzj.com'
+        }
+        yield scrapy.Request(url='https://shuju.wdzj.com/problem-list-all.html?year=', headers=default_headers,
+                             body=urllib.urlencode(default_data), callback=self.parse_basic_info, dont_filter=True)
 
     def parse_basic_info(self, response):
         basic_info = response.text
         problemList=eval(basic_info.replace('null', 'None').replace('false', 'None').replace('true', 'None'))['problemList']
         for problem in problemList:
-            item = WdzjResultItem(item=WdzjResultItem(), response=response)
+            item = WdzjLoaderItem(item=WdzjResultItem(), response=response)
             item.add_value('batch_date', self.batch_date)
             item.add_value('platName', problem['platName'])
             item.add_value('problemTime', problem['problemTime'])
