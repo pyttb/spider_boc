@@ -77,6 +77,24 @@ def queryAll(sql):
     conn.close()
     return res
 
+def insertOne(sql, value):
+    conn = getConn()
+    cursor = conn.cursor()
+    rowcount = cursor.execute(sql, value)
+    cursor.close()
+    conn.close()
+    return rowcount
+
+    # def insertMany(self, sql, values):
+    #     """
+    #     @summary: 向数据表插入多条记录
+    #     @param sql:要插入的ＳＱＬ格式
+    #     @param values:要插入的记录数据tuple(tuple)/list[list]
+    #     @return: count 受影响的行数
+    #     """
+    #     count = self._cursor.executemany(sql, values)
+    #     return count
+
 # if __name__ == "__main__":
 #     res = queryAll('select name from CREDITCHINA.QUERY_CUST_LIST order BY sid ASC ')
 #     l=[]
