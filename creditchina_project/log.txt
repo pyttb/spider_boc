@@ -1,0 +1,17 @@
+2018-03-26 09:36:41 [root] WARNING: 爬虫程序执行结束，即将关闭
+2018-03-26 10:27:17 [root] WARNING: 爬虫程序执行结束，即将关闭
+2018-03-26 10:30:52 [root] WARNING: 爬虫程序执行结束，即将关闭
+2018-03-26 10:31:37 [root] WARNING: 爬虫程序执行结束，即将关闭
+2018-03-26 12:59:33 [scrapy.core.scraper] ERROR: Spider error processing <GET http://www.wind.com.cn/> (referer: None)
+Traceback (most recent call last):
+  File "C:\Python27\lib\site-packages\twisted\internet\defer.py", line 653, in _runCallbacks
+    current.result = callback(current.result, *args, **kw)
+  File "C:\Users\PAN\PycharmProjects\spider_boc\creditchina_project\creditchina_project\spiders\wind_spider.py", line 67, in parse_basic_info
+    insertOne("INSERT INTO CREDITCHINA.WIND_IB_RESULT (TRADE_DATE, COMP_NAME, REGCAPITAL, CHAIRMAN, ADDRESS, FULLNAME, ISSUEAMOUNT,OUTSTANDINGBALANCE,CARRYDATE,MATURITYDATE,TERM,AGENCY_GUARANTOR,AGENCY_GRNTTYPE,GUARTERM,GUARRANGE,COUNTERGUAR) VALUES (?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?)",result)
+  File "C:\Users\PAN\PycharmProjects\spider_boc\creditchina_project\creditchina_project\utils\dbutils.py", line 84, in insertOne
+    conn.set_autocommit(True)
+  File "C:\Python27\lib\site-packages\DBUtils\PooledDB.py", line 445, in __getattr__
+    return getattr(self._con, name)
+AttributeError: SteadyDBConnection instance has no attribute 'set_autocommit'
+2018-03-26 12:59:33 [root] WARNING: 爬虫程序执行结束，即将关闭
+2018-03-26 16:47:55 [root] WARNING: 爬虫程序执行结束，即将关闭
