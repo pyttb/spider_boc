@@ -23,7 +23,7 @@ class CreditChinaSpider(scrapy.Spider):
         }
     }
     creditchina_cust_list=[]
-    cust_list = queryAll('select name from CREDITCHINA.QUERY_CUST_LIST order BY sid ASC ')
+    cust_list = queryAll('select name from SPIDER.QUERY_CUST_LIST order BY sid ASC ')
     for cu in list(cust_list):
         creditchina_cust_list.append(cu[0])
     batch_date = datetime.datetime.now().date()
@@ -217,7 +217,7 @@ class CreditChinaSpider(scrapy.Spider):
                 item.add_value('local_code', result['xkDfbm'])
                 item.add_value('permit_org', result['xkXzjg'])
                 item.add_value('data_update_date', result['xkSjc'])
-                item.add_value('table_name', 'creditchina.pub_permissions_name')
+                item.add_value('table_name', 'spider.pub_permissions_name')
                 yield item.load_item()
     #red
     def parse_record_param_url_append_2(self, response):
@@ -241,7 +241,7 @@ class CreditChinaSpider(scrapy.Spider):
                     item.add_value('taxpayer_name', result['纳税人名称'])
                     item.add_value('rating_year', result['评价年度'])
                     item.add_value('data_update_date', result['最新更新日期'])
-                    item.add_value('table_name', 'creditchina.cust_red_list')
+                    item.add_value('table_name', 'spider.cust_red_list')
                     yield item.load_item()
                 else:
                     self.logger.warning('parse_record_param_url_append_2 (cust name is: %s) has a new type: %s'%cust,result['数据类别'])
@@ -268,7 +268,7 @@ class CreditChinaSpider(scrapy.Spider):
                     item.add_value('set_date', result['设立日期'])
                     item.add_value('org_name', result['列入决定机关名称'])
                     item.add_value('data_update_date', result['最新更新日期'])
-                    item.add_value('table_name', 'creditchina.cust_attention_list')
+                    item.add_value('table_name', 'spider.cust_attention_list')
                     yield item.load_item()
                 else:
                     self.logger.warning('parse_record_param_url_append_4 (cust name is: %s) has a new type: %s'%cust,result['数据类别'])
@@ -303,7 +303,7 @@ class CreditChinaSpider(scrapy.Spider):
                     item_DishonestyBlacklist.add_value('performanced_part', result['已履行部分'])
                     item_DishonestyBlacklist.add_value('unperformanced_part', result['未履行部分'])
                     item_DishonestyBlacklist.add_value('data_update_date', result['最新更新日期'])
-                    item_DishonestyBlacklist.add_value('table_name', 'creditchina.dishonesty_blacklist')
+                    item_DishonestyBlacklist.add_value('table_name', 'spider.dishonesty_blacklist')
                     yield item_DishonestyBlacklist.load_item()
                 if result['数据类别'] == '重大税收违法案件当事人名单':
                     item_SeriousRevenueLawlessCustList = CreditchinaLoaderItem(item=SeriousRevenueLawlessCustListItem(),response=response)
@@ -322,7 +322,7 @@ class CreditChinaSpider(scrapy.Spider):
                     item_SeriousRevenueLawlessCustList.add_value('punish_status', result['相关法律依据及税务处理处罚情况'])
                     item_SeriousRevenueLawlessCustList.add_value('case_report_date', result['案件上报期'])
                     item_SeriousRevenueLawlessCustList.add_value('data_update_date', result['最新更新日期'])
-                    item_SeriousRevenueLawlessCustList.add_value('table_name', 'creditchina.serious_revenue_lawless_cust_list')
+                    item_SeriousRevenueLawlessCustList.add_value('table_name', 'spider.serious_revenue_lawless_cust_list')
                     yield item_SeriousRevenueLawlessCustList.load_item()
                 if result['数据类别'] == '财政部采购不良记录数据':
                     item_PurchasingBadnessRecord = CreditchinaLoaderItem(item=PurchasingBadnessRecordItem(),response=response)
@@ -338,7 +338,7 @@ class CreditChinaSpider(scrapy.Spider):
                     item_PurchasingBadnessRecord.add_value('exec_org', result['执法（记录）单位'])
                     item_PurchasingBadnessRecord.add_value('punish_end_date', result['处罚结束时间'])
                     item_PurchasingBadnessRecord.add_value('data_update_date', result['最新更新日期'])
-                    item_PurchasingBadnessRecord.add_value('table_name', 'creditchina.purchasing_badness_record')
+                    item_PurchasingBadnessRecord.add_value('table_name', 'spider.purchasing_badness_record')
                     yield item_PurchasingBadnessRecord.load_item()
                 if result['数据类别'] != '财政部采购不良记录数据' and result['数据类别'] != '重大税收违法案件当事人名单' and result['数据类别'] != '失信黑名单-法人':
                     self.logger.warning('parse_record_param_url_append_8 (cust name is: %s) has a new type: %s'%cust,result['数据类别'])

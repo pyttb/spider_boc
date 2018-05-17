@@ -6,9 +6,9 @@ import ibm_db_dbi
 import ibm_db
 from DBUtils.PooledDB import PooledDB
 from scrapy.utils.project import get_project_settings
+#数据库实例化类
 from twill.shell import Singleton
 
-#数据库实例化类
 class DbManager(Singleton):
     def __init__(self):
         settings = get_project_settings()

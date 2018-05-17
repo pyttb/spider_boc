@@ -46,14 +46,14 @@ ROBOTSTXT_OBEY = False
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 32
 
-#LOG_LEVEL='INFO'
+# LOG_LEVEL='INFO'
 # LOG_LEVEL='WARNING'
 # LOG_FILE='log.txt'
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+# DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -124,9 +124,9 @@ MYSQL_PASSWORD = "YourPass"
 
 # DB2 CONFIGURE
 DB2_HOST = "127.0.0.1"
-DB2_DBNAME = "spider"
-DB2_USER = "root"
-DB2_PASSWORD = "spider"
+DB2_DBNAME = "iass"
+DB2_USER = "PAN"
+DB2_PASSWORD = "8341"
 DB2_PORT = 50000
 
 # REDIS CONFIGURE
