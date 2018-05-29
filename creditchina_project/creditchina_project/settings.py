@@ -124,9 +124,9 @@ MYSQL_PASSWORD = "YourPass"
 
 # DB2 CONFIGURE
 DB2_HOST = "127.0.0.1"
-DB2_DBNAME = "spider"
-DB2_USER = "root"
-DB2_PASSWORD = "spider"
+DB2_DBNAME = "iass"
+DB2_USER = "YourName"
+DB2_PASSWORD = "YourPass"
 DB2_PORT = 50000
 
 # REDIS CONFIGURE
