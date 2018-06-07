@@ -90,7 +90,7 @@ class MysqlPipeline():
     def from_crawler(cls, crawler):
         return cls(
             host=crawler.settings.get('MYSQL_HOST'),
-            database=crawler.settings.get('MYSQL_DATABASE'),
+            database=crawler.settings.get('MYSQL_DBNAME'),
             user=crawler.settings.get('MYSQL_USER'),
             password=crawler.settings.get('MYSQL_PASSWORD'),
             port=crawler.settings.get('MYSQL_PORT'),
