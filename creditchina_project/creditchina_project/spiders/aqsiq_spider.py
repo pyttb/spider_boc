@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy,re,logging,datetime
-from aqsiq_project.items import AqsiqResultItem
+from creditchina_project.items import AqsiqResultItem
 
 class AqsiqSpiderSpider(scrapy.Spider):
     name = 'aqsiq'
