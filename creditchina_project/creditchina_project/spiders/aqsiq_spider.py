@@ -7,7 +7,7 @@ class AqsiqSpiderSpider(scrapy.Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'aqsiq_project.pipelines.MysqlPipeline': 100,
+            'creditchina_project.pipelines.MysqlPipeline': 100,
         }
     }
 
