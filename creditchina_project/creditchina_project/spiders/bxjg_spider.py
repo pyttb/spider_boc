@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy,re,datetime,logging
-from aqsiq_project.items import *
+from creditchina_project.items import *
 
 class BxjgSpider(scrapy.Spider):
     name = 'bxjg'
