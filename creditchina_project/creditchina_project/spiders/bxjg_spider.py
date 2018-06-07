@@ -7,10 +7,10 @@ class BxjgSpider(scrapy.Spider):
 
     custom_settings = {
         'DOWNLOADER_MIDDLEWARES': {
-            'aqsiq_project.middlewares.RandomUserAgent': 100,
+            'creditchina_project.middlewares.RandomUserAgent': 100,
         },
         'ITEM_PIPELINES': {
-            'aqsiq_project.pipelines.MysqlPipeline': 100
+            'creditchina_project.pipelines.MysqlPipeline': 100
         }
     }
     batch_date = datetime.datetime.now().date()
