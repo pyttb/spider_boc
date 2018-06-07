@@ -1,0 +1,16 @@
+CREATE TABLE `TUDI` (
+  `totalUrl` varchar(200) DEFAULT NULL,
+  `ordnum` int(11) DEFAULT NULL,
+  `country` varchar(30) DEFAULT NULL,
+  `num` varchar(20) DEFAULT NULL,
+  `myname` varchar(100) DEFAULT NULL,
+  `address` varchar(200) DEFAULT NULL,
+  `area` varchar(10) DEFAULT NULL,
+  `myuse` varchar(60) DEFAULT NULL,
+  `way` varchar(20) DEFAULT NULL,
+  `price` varchar(30) DEFAULT NULL,
+  `person` varchar(50) DEFAULT NULL,
+  `start` varchar(30) DEFAULT NULL,
+  `finish` varchar(30) DEFAULT NULL,
+  `compact` varchar(30) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
