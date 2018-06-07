@@ -3,7 +3,7 @@ import scrapy
 import re
 from scrapy.http import Request
 from scrapy.http import FormRequest
-from aqsiq_project.items import *
+from creditchina_project.items import *
 from bs4 import BeautifulSoup
 from ..settings import SPIDER_DATE
 
