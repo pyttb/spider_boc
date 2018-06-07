@@ -14,10 +14,10 @@ class TudiEndSpider(scrapy.Spider):
     custom_settings = {
         'DOWNLOAD_DELAY' : 2,
         'DOWNLOADER_MIDDLEWARES' : {
-        'aqsiq_project.middlewares.RandomUserAgent': 100,
+        'creditchina_project.middlewares.RandomUserAgent': 100,
         },
         'ITEM_PIPELINES': {
-            'aqsiq_project.pipelines.MysqlPipeline': 100,
+            'creditchina_project.pipelines.MysqlPipeline': 100,
         },
     }
 
