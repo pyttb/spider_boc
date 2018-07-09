@@ -1,19 +1,6 @@
-# -*- coding: utf-8 -*-
-import time
-
-from scrapy.cmdline import execute
-import sys
-import os
-import logging
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
-def demo():
-    pass
-
-import datetime
-starttime = time.time()
-#long running
-time.sleep(1)
-endtime = time.time()
-print (endtime-starttime)
+import pandas as pd
+from datetime import datetime
+def datelist(beginDate, endDate):
+    date_l=[datetime.strftime(x,'%Y-%#m-%#d') for x in list(pd.date_range(start=beginDate, end=endDate))]
+    return date_l
+print datelist('20160601','20160605')

@@ -26,24 +26,33 @@ class Lianjia(scrapy.Spider):
 
     }
     def start_requests(self):
-        yield scrapy.Request(url='https://www.lianjia.com/', headers=self.default_headers,
+        yield scrapy.Request(url='https://bj.lianjia.com/', headers=self.default_headers,
                              body=urllib.urlencode(self.default_data), callback=self.parse_cities_info, dont_filter=True)
 
     def parse_cities_info(self, response):
         basic_info = response.text
         cities=[]
-        for idx in range(0,len(Selector(text=basic_info).xpath('//div[@class="all"]//ul[@class="clear"]//li/a/@href').extract())):
+        for idx in range(0,len(Selector(text=basic_info).xpath('//div[@class="fc-main clear"]//a/@href').extract())):
             cities.append(
                 {'url': Selector(text=basic_info).xpath(
-                    '//div[@class="all"]//ul[@class="clear"]//li/a/@href').extract()[idx],
+                    '//div[@class="fc-main clear"]//a/@href').extract()[idx],
                  'name': Selector(text=basic_info).xpath(
-                     '//div[@class="all"]//ul[@class="clear"]//li/a/text()').extract()[idx]
+                     '//div[@class="fc-main clear"]//a/text()').extract()[idx]
                  }
             )
         # cities=cities[0:2]
+        allowed_cities=['https://sh.lianjia.com/']
         for city in cities:
+            if city['url'] not in allowed_cities:
+                continue
             yield scrapy.Request(url=city['url']+'xiaoqu/', headers=self.default_headers,
-                                 body=urllib.urlencode(self.default_data), meta={'city_name':city['name']} ,callback=self.parse_city_info, dont_filter=True)
+                                 body=urllib.urlencode(self.default_data), meta={'city_name':city['name']} ,callback=self.parse_district_info, dont_filter=True)
+
+    def parse_district_info(self, response):
+        basic_info = response.text
+        city_name = response.meta['city_name']
+        districts = Selector(text=basic_info).xpath('//div[@data-role="ershoufang"]/div/a/@href').extract()
+        print(districts)
 
     def parse_city_info(self, response):
         basic_info = response.text
@@ -73,18 +82,18 @@ class Lianjia(scrapy.Spider):
             '//div[@class="xiaoquOverview"]/div[@class="xiaoquDescribe fr"]/div[@class="xiaoquInfo"]/div[@class="xiaoquInfoItem"][6]/span[@class="xiaoquInfoContent"]/text()').extract()[0]
         neighborhood_houses = Selector(text=basic_info).xpath(
             '//div[@class="xiaoquOverview"]/div[@class="xiaoquDescribe fr"]/div[@class="xiaoquInfo"]/div[@class="xiaoquInfoItem"][7]/span[@class="xiaoquInfoContent"]/text()').extract()[0]
-        item = LianjiaLoaderItem(item=LianjiaResultItem(), response=response)
-        item.add_value('batch_date', self.batch_date)
-        item.add_value('city_name', city_name)
-        item.add_value('block_name', block_name)
-        item.add_value('neighborhood_name', neighborhood_name)
-        item.add_value('neighborhood_addr', neighborhood_addr)
-        item.add_value('neighborhood_price', neighborhood_price)
-        item.add_value('neighborhood_estate', neighborhood_estate)
-        item.add_value('neighborhood_builds', neighborhood_builds)
-        item.add_value('neighborhood_houses', neighborhood_houses)
-        item.add_value('table_name', 'creditchina.lianjia_result')
-        yield item.load_item()
+        # item = LianjiaLoaderItem(item=LianjiaResultItem(), response=response)
+        # item.add_value('batch_date', self.batch_date)
+        # item.add_value('city_name', city_name)
+        # item.add_value('block_name', block_name)
+        # item.add_value('neighborhood_name', neighborhood_name)
+        # item.add_value('neighborhood_addr', neighborhood_addr)
+        # item.add_value('neighborhood_price', neighborhood_price)
+        # item.add_value('neighborhood_estate', neighborhood_estate)
+        # item.add_value('neighborhood_builds', neighborhood_builds)
+        # item.add_value('neighborhood_houses', neighborhood_houses)
+        # item.add_value('table_name', 'creditchina.lianjia_result')
+        # yield item.load_item()
 
     def closed(self, reason):
         '''

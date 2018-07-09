@@ -61,10 +61,11 @@ class SseSpider(scrapy.Spider):
         party_name=''
         pub_type=''
         if not response.xpath('//div[@class="allZoom"]//p[1]//text()').extract()[0].startswith('当事人'):
-            writ_no = response.xpath('//div[@class="allZoom"]//p[1]//text()').extract()[0]
+            writ_no = ''.join(response.xpath('//div[@class="allZoom"]//p[1]//text()').extract())
             party_name = response.xpath('//div[@class="allZoom"]//p[3]//text()').extract()[0]
         else:
             party_name = response.xpath('//div[@class="allZoom"]//p[2]//text()').extract()[0]
+        party_name=party_name.replace('；','').replace('。','').strip()
         texts=response.xpath('//div[@class="allZoom"]//p//text()').extract()
         for text in texts:
             if text.find('本所做出如下纪律处分决定：')>0:

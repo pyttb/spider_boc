@@ -1,4 +1,10 @@
-from scrapy import cmdline
-name = 'bxjg'
-cmd = 'scrapy crawl {0}'.format(name)
-cmdline.execute(cmd.split())
+# -*- coding: utf-8 -*-
+
+from scrapy.cmdline import execute
+import sys
+import os
+reload(sys)
+sys.setdefaultencoding('utf-8')
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+execute(['scrapy', 'crawl', 'bxjg'])
