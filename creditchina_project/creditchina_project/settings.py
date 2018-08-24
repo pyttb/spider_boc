@@ -47,7 +47,7 @@ ROBOTSTXT_OBEY = False
 CONCURRENT_REQUESTS = 32
 
 #LOG_LEVEL='INFO'
-# LOG_LEVEL='WARNING'
+LOG_LEVEL='WARNING'
 # LOG_FILE='log.txt'
 
 # Configure a delay for requests for the same website (default: 0)
@@ -126,7 +126,7 @@ MYSQL_PORT = 3306
 # DB2 CONFIGURE
 DB2_HOST = "127.0.0.1"
 DB2_DBNAME = "iass"
-DB2_USER = "YourName"
+DB2_USER = "PAN"
 DB2_PASSWORD = "YourPass"
 DB2_PORT = 50000
 
