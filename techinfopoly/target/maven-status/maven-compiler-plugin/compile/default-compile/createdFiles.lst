@@ -1,0 +1,10 @@
+com\bankcomm\configuration\SecurityConfiguration.class
+com\bankcomm\configuration\WebConfiguration.class
+com\bankcomm\util\TransCodeUtil.class
+com\bankcomm\domain\Pager.class
+com\bankcomm\services\NewsServiceImpl.class
+com\bankcomm\repositories\NewsRepository.class
+com\bankcomm\controllers\NewsController.class
+com\bankcomm\services\NewsService.class
+com\bankcomm\domain\News.class
+com\bankcomm\SpringBootWebApplication.class

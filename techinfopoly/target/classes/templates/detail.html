@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>详情页</title>
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="header">
+  <a href="index.html"><img th:src="@{/images/logo.png}" src="../static/images/logo.png" alt=""></a>
+</div>
+<div class="container">
+  <div class="conLeft">
+    <h3 class="bigTitle" th:text="${news.title}"></h3>
+    <div class="releaseTime" th:text="${news.update}"></div>
+    <div class="newDetail">
+      <div th:utext="${news.content}"></div>
+      <div class="keyWord">
+        <a href="javascript:;" th:each="keyword: ${#strings.arraySplit(news.keywords,',')}" th:text="${keyword}"></a>
+      </div>
+    </div>
+    <div class="discuss">
+      <div class="disTitle">参与讨论</div>
+      <div class="disContent">
+        <textarea name="content" rows="6" maxlength="2000" placeholder="输入留言 最大输入2000字"></textarea>
+        <div class="comment"><span>评论</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="conRight">
+    <div class="newFlash">
+      <h5>7*24快讯</h5>
+      <div class="newContent">
+        <p th:each="news : ${topHotNewsList}">
+          <span><em class="blueCircle"></em></span>
+          <span><a th:href="@{'detail?id='+${news.id}}" target="_blank" th:text="${news.title}"></a></span>
+        </p>
+        <div class="more"><a th:href="@{'hot'}" target="_blank" th:text="浏览更多"></a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
