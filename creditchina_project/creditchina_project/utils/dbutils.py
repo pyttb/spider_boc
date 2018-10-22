@@ -14,7 +14,7 @@ class DbManager(Singleton):
         settings = get_project_settings()
         ibm_db_dbi.threadsafety=1
         connKwargs = {'dsn':'DATABASE='+settings['DB2_DBNAME']+';HOSTNAME='+settings['DB2_HOST']+';UID='+settings['DB2_USER']+';PWD='+settings['DB2_PASSWORD']+';PORT='+str(settings['DB2_PORT']),
-                      # 'conn_options':{'SQL_ATTR_AUTOCOMMIT': ibm_db.SQL_AUTOCOMMIT_ON}
+                      'conn_options':{'SQL_ATTR_AUTOCOMMIT': ibm_db_dbi.SQL_AUTOCOMMIT_ON}
                       }
         self._pool = PooledDB(ibm_db_dbi, mincached=0, maxcached=10, maxshared=10, maxusage=10000, **connKwargs)
     def getConn(self):

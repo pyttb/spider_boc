@@ -65,7 +65,7 @@ class Wdzj(scrapy.Spider):
             item.add_value('regCapital', problem['regCapital'])
             item.add_value('area', problem['area'])
             item.add_value('type', problem['type'])
-            item.add_value('table_name', 'creditchina.wdzj_result')
+            item.add_value('table_name', 'spider.wdzj_result')
             yield item.load_item()
 
     def closed(self, reason):

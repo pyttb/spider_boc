@@ -22,16 +22,26 @@ class P2peye(scrapy.Spider):
     default_data = {
     }
     default_headers = {
+        'Cache-Control': 'max-age=0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'en-US,en;q=0.9,ja-JP;q=0.8,ja;q=0.7,zh-CN;q=0.6,zh;q=0.5',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
+        'Cookie': 'TYID=enANiFuPeCcaKUrwSxGjAg==; __jsluid=4fe585b5fa88fb6ab5545ba6f144a51c; A4gK_987c_saltkey=m0LIcKrh; A4gK_987c_lastvisit=1536125463; A4gK_987c_lastact=1536129063%09platformData.php%09issue',
+        'Upgrade-Insecure-Requests': 1,
+        'Connection': 'keep-alive',
+        'Host': 'www.p2peye.com'
     }
     MAX_PAGE=300
     def start_requests(self):
 
         for page in range(1,self.MAX_PAGE):
-            yield scrapy.Request(url='http://www.p2peye.com/platformData.php?mod=issue&ajax=1&action=getPage&page='+str(page), headers=self.default_headers,
+            yield scrapy.Request(url='https://www.p2peye.com/platformData.php?mod=issue&ajax=1&action=getPage&page='+str(page), headers=self.default_headers,
                                  body=urllib.urlencode(self.default_data), callback=self.parse_basic_info, dont_filter=True)
     def parse_basic_info(self, response):
         basic_info = response.text
         code=eval(basic_info.replace('null', 'None').replace('false', 'None').replace('true', 'None'))['code']
+        print(code)
         datas = eval(basic_info.replace('null', 'None').replace('false', 'None').replace('true', 'None'))['data']
         if code=='0':
             for data in datas:
@@ -67,7 +77,7 @@ class P2peye(scrapy.Spider):
                     item.add_value('online_time', online_time)
                     item.add_value('city_name', city_name)
                     item.add_value('black_type_name', black_type_name)
-                    item.add_value('table_name', 'creditchina.p2peye_result')
+                    item.add_value('table_name', 'spider.p2peye_result')
                     yield item.load_item()
     def parse_detail_info(self, response):
         name=response.meta['name']
@@ -97,7 +107,7 @@ class P2peye(scrapy.Spider):
         item.add_value('comp_name', comp_name)
         item.add_value('reg_capital', reg_capital)
         item.add_value('status', status)
-        item.add_value('table_name', 'creditchina.p2peye_result')
+        item.add_value('table_name', 'spider.p2peye_result')
         yield item.load_item()
     def closed(self, reason):
         '''

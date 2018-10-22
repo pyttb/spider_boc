@@ -46,9 +46,13 @@ ROBOTSTXT_OBEY = False
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 32
 
-#LOG_LEVEL='INFO'
-LOG_LEVEL='WARNING'
+LOG_LEVEL='INFO'
+# LOG_LEVEL='WARNING'
 # LOG_FILE='log.txt'
+
+SPLASH_URL = 'http://47.105.51.111:8050'
+DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
+HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -78,9 +82,12 @@ LOG_LEVEL='WARNING'
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'creditchina_project.middlewares.CreditchinaProjectDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy_splash.SplashCookiesMiddleware': 723,
+    'scrapy_splash.SplashMiddleware': 725,
+    'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+   # 'creditchina_project.middlewares.CreditchinaProjectDownloaderMiddleware': 543,
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -126,8 +133,8 @@ MYSQL_PORT = 3306
 # DB2 CONFIGURE
 DB2_HOST = "127.0.0.1"
 DB2_DBNAME = "iass"
-DB2_USER = "PAN"
-DB2_PASSWORD = "YourPass"
+DB2_USER = ""
+DB2_PASSWORD = ""
 DB2_PORT = 50000
 
 # REDIS CONFIGURE
