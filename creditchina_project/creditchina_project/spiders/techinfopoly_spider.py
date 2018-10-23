@@ -82,6 +82,8 @@ class TechInfoPoly(scrapy.Spider):
                 keywords = ','.join(Selector(text=detail_info).xpath('//p[@class="art_keywords"]/a/text()').extract())
             hot = response.meta['hot']
             type = response.meta['type']
+            if type != '快讯':
+                type = self.get_type(content)
             update = ''
             if len(Selector(text=detail_info).xpath('//span[@class="date"]/text()').extract())>0:
                 update = Selector(text=detail_info).xpath('//span[@class="date"]/text()').extract()[0].strip()
@@ -104,6 +106,19 @@ class TechInfoPoly(scrapy.Spider):
         item.add_value('update', update)
         item.add_value('table_name', table_name)
         return item
+
+    def get_type(self, content):
+        if '金融' in content or '银行' in content or '证券' in content:
+            return '金融科技'
+        if '区块连' in content:
+            return '区块连'
+        if '消费' in content or '汽车' in content or '电子' in content:
+            return '消费'
+        if '新零售' in content or 'O2O' in content:
+            return '新零售'
+        if '大数据' in content:
+            return '大数据'
+        return '金融科技'
 
     def closed(self, reason):
         '''
