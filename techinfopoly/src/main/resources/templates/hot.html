@@ -8,45 +8,43 @@
   <script src="../static/js/bootstrap.min.js"  th:src="@{/js/bootstrap.min.js}"></script>
 </head>
 <body>
-<div class="header">
-  <a href="index.html"><img th:src="@{/images/logo.png}" src="../static/images/logo.png" alt=""></a>
-</div>
-<div class="container">
-  <div class="conLeft">
-    <h3 class="bigTitle" th:text="7x24小时快讯"></h3>
-    <div class="hotNews" id="financial">
-      <div class="newRow" th:each="news : ${allHotNewsList}">
-        <p>
-          <span><em class="blueCircle"></em>&nbsp;<a th:href="@{'detail?id='+${news.id}}" th:text="${news.title }+' ('+${news.update}+')'" target="_blank"></a></span>
-        </p>
-      </div>
-    </div>
-    <br>
-    <div class="row">
-      <div class="col-md-4"></div>
-      <div th:if="${allHotNewsList.totalPages != 1}" class="form-group col-md-4 pagination-centered">
-        <ul class="pagination">
-          <li th:class="${allHotNewsList.number == 0} ?  'disabled page-item'">
-            <a class="page-link" th:href="@{hot/(pageSize=${selectedPageSize}, page=1)}">&laquo;</a>
-          </li>
-          <li th:class="${allHotNewsList.number == 0} ? disabled : 'page-item'">
-            <a class="page-link" th:href="@{hot/(pageSize=${selectedPageSize}, page=${allHotNewsList.number})}">&larr;</a>
-          </li>
-          <li th:class="${allHotNewsList.number == (page - 1)} ? 'active pointer-disabled'"
-              th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
-            <a class="page-link" th:href="@{hot/(pageSize=${selectedPageSize}, page=${page})}" th:text="${page}"></a>
-          </li>
-          <li th:class="${allHotNewsList.number + 1 == allHotNewsList.totalPages} ? disabled">
-            <a class="page-link" th:href="@{hot/(pageSize=${selectedPageSize}, page=${allHotNewsList.number + 2})}">&rarr;</a>
-          </li>
-          <li th:class="${allHotNewsList.number + 1 == allHotNewsList.totalPages} ? disabled">
-            <a class="page-link" th:href="@{hot/(pageSize=${selectedPageSize}, page=${allHotNewsList.totalPages})}">&raquo;</a>
+  <div class="header">
+    <a><img th:src="@{/images/logo.png}" src="../static/images/logo.png" alt=""></a>
+  </div>
+  <div class="container clearfix">
+      <img src="../static/images/banner2.png" th:src="@{/images/banner2.png}" class="banner2" alt="">
+      <div class="hot_lists">
+        <h3 th:text="7x24小时快讯"></h3>
+        <ul class="hotNews" id="financial">
+          <li th:each="news : ${allHotNewsList}">
+              <!--<a th:href="@{'detail?id='+${news.id}}" th:text="${news.title }+' ('+${news.update}+')'" target="_blank"></a>-->
+            <a th:href="@{'detail?id='+${news.id}}" target="_blank"><span th:text="${news.title }"></span><span th:text="${news.update}"></span></a >
           </li>
         </ul>
+        <div class="row">
+          <div th:if="${allHotNewsList.totalPages != 1}" class="form-group pagination-centered">
+            <ul class="pagination">
+              <li th:class="${allHotNewsList.number == 0} ?  'disabled page-item'">
+                <a class="page-link" th:href="@{/hot/(pageSize=${selectedPageSize}, page=1)}">&laquo;</a>
+              </li>
+              <li th:class="${allHotNewsList.number == 0} ? disabled : 'page-item'">
+                <a class="page-link" th:href="@{/hot/(pageSize=${selectedPageSize}, page=${allHotNewsList.number})}">&larr;</a>
+              </li>
+              <li th:class="${allHotNewsList.number == (page - 1)} ? 'active pointer-disabled'"
+                  th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                <a class="page-link" th:href="@{/hot/(pageSize=${selectedPageSize}, page=${page})}" th:text="${page}"></a>
+              </li>
+              <li th:class="${allHotNewsList.number + 1 == allHotNewsList.totalPages} ? disabled">
+                <a class="page-link" th:href="@{/hot/(pageSize=${selectedPageSize}, page=${allHotNewsList.number + 2})}">&rarr;</a>
+              </li>
+              <li th:class="${allHotNewsList.number + 1 == allHotNewsList.totalPages} ? disabled">
+                <a class="page-link" th:href="@{/hot/(pageSize=${selectedPageSize}, page=${allHotNewsList.totalPages})}">&raquo;</a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div class="col-md-4"></div>
     </div>
   </div>
-</div>
 </body>
 </html>
