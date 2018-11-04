@@ -77,6 +77,7 @@ class TechInfoPolyResultItem(scrapy.Item):
     title = scrapy.Field()
     content = scrapy.Field()
     cover = scrapy.Field()
+    pdf = scrapy.Field()
     keywords = scrapy.Field()
     hot = scrapy.Field()
     type = scrapy.Field()
