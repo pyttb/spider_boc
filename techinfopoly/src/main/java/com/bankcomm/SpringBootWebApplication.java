@@ -16,9 +16,6 @@ public class SpringBootWebApplication {
     @Autowired
     private ThymeleafProperties properties;
 
-    @Value("${spring.thymeleaf.templates_root:}")
-    private String templatesRoot;
-
     public static void main(String[] args) {
         SpringApplication.run(SpringBootWebApplication.class, args);
     }
@@ -27,10 +24,10 @@ public class SpringBootWebApplication {
     public ITemplateResolver defaultTemplateResolver() {
         FileTemplateResolver resolver = new FileTemplateResolver();
         resolver.setSuffix(properties.getSuffix());
-        resolver.setPrefix(templatesRoot);
+        resolver.setPrefix(properties.getPrefix());
         resolver.setTemplateMode(properties.getMode());
         resolver.setCacheable(properties.isCache());
-        resolver.setCharacterEncoding("UTF-8");
+        resolver.setCharacterEncoding(String.valueOf(properties.getEncoding()));
         return resolver;
     }
 }

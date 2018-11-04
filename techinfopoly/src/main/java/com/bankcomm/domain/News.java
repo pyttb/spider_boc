@@ -66,6 +66,7 @@ import java.util.Date;
                                         @FieldResult(name="title", column="title"),
                                         @FieldResult(name="content", column="content"),
                                         @FieldResult(name="cover", column="cover"),
+                                        @FieldResult(name="pdf", column="pdf"),
                                         @FieldResult(name="type", column="type"),
                                         @FieldResult(name="keywords", column="keywords"),
                                         @FieldResult(name="hot", column="hot"),
@@ -84,6 +85,7 @@ import java.util.Date;
                                         @FieldResult(name="title", column="title"),
                                         @FieldResult(name="content", column="content"),
                                         @FieldResult(name="cover", column="cover"),
+                                        @FieldResult(name="pdf", column="pdf"),
                                         @FieldResult(name="type", column="type"),
                                         @FieldResult(name="keywords", column="keywords"),
                                         @FieldResult(name="hot", column="hot"),
@@ -125,6 +127,9 @@ public class News  implements Serializable {
     @Lob @Basic(fetch = FetchType.LAZY)
     @Column(name = "cover", columnDefinition="BLOB")
     private byte[] cover;
+    @Lob @Basic(fetch = FetchType.LAZY)
+    @Column(name = "pdf", columnDefinition="BLOB")
+    private byte[] pdf;
     @Column()
     private String type;
     @Column()
@@ -139,12 +144,13 @@ public class News  implements Serializable {
     public News() {
     }
 
-    public News(Integer id, String url, String title, String content, byte[] cover, String type, String keywords, String hot, String update, Date batch) {
+    public News(Integer id, String url, String title, String content, byte[] cover, byte[] pdf, String type, String keywords, String hot, String update, Date batch) {
         this.id = id;
         this.url = url;
         this.title = title;
         this.content = content;
         this.cover = cover;
+        this.pdf = pdf;
         this.type = type;
         this.keywords = keywords;
         this.hot = hot;
@@ -190,6 +196,14 @@ public class News  implements Serializable {
 
     public void setCover(byte[] cover) {
         this.cover = cover;
+    }
+
+    public byte[] getPdf() {
+        return pdf;
+    }
+
+    public void setPdf(byte[] pdf) {
+        this.pdf = pdf;
     }
 
     public String getType() {
@@ -240,6 +254,7 @@ public class News  implements Serializable {
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", cover=" + Arrays.toString(cover) +
+                ", pdf=" + Arrays.toString(pdf) +
                 ", type='" + type + '\'' +
                 ", keywords='" + keywords + '\'' +
                 ", hot='" + hot + '\'' +

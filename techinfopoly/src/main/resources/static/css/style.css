@@ -82,7 +82,7 @@ a{
 }
 .nav a {
   display: inline-block;
-  padding: 0 40px;
+  padding: 0 25px;
   margin:0 10px;
   text-align: center;
   line-height: 59px;
@@ -258,6 +258,10 @@ a{
 .con_details{
   border-bottom: 1px dashed #dcdcdc;
 }
+.pdf_details{
+  border-bottom: 1px dashed #dcdcdc;
+  min-height: 600px;
+}
 .con_details p{
   text-indent: 1em;
   padding-bottom:15px;
@@ -269,6 +273,11 @@ a{
   padding: 25px 0;
   color:#999;
   font-size: 12px;
+}
+.download{
+  background: url(../images/download.png) no-repeat center;
+  background-size: 26px 26px;
+  padding-left: 36px;
 }
 .keyWord a{
   color: #999999;

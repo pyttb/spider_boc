@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.Optional;
 
 @Controller
@@ -30,12 +33,6 @@ public class NewsController {
         this.newsService = newsService;
     }
 
-//    @RequestMapping("/")
-//    String index(Model model){
-//        model.addAttribute("newsList", newsService.getAllNews());
-//        model.addAttribute("topHotNewsList", newsService.getTopHotNews());
-//        return "index";
-//    }
     @RequestMapping("/")
     public ModelAndView index(@RequestParam("pageSize") Optional<Integer> pageSize, @RequestParam("page") Optional<Integer> page, @RequestParam(value = "type", defaultValue = "金融科技") String type){
         ModelAndView modelAndView = new ModelAndView("index");
@@ -70,5 +67,21 @@ public class NewsController {
         modelAndView.addObject("pageSizes", PAGE_SIZES);
         modelAndView.addObject("pager", pager);
         return modelAndView;
+    }
+
+    @RequestMapping(value = "pdf", method = RequestMethod.GET)
+    public StreamingResponseBody generatePdf(HttpServletResponse response, @RequestParam Integer id, Model model) throws IOException {
+        News news = newsService.getNewsById(id);
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + news.getId() + ".pdf\"");
+        Base64 base64 = new Base64();
+        InputStream inputStream = new ByteArrayInputStream(base64.decode(news.getPdf()));
+        return outputStream -> {
+            int nRead;
+            byte[] data = new byte[1024];
+            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                outputStream.write(data, 0, nRead);
+            }
+        };
     }
 }

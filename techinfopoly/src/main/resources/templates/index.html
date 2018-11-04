@@ -23,6 +23,7 @@
       <a href="/?type=消费" th:class="${(param.type != null) and (param.type[0] == '消费')} ? 'active'">消费</a>
       <a href="/?type=新零售" th:class="${(param.type != null) and (param.type[0] == '新零售')} ? 'active'">新零售</a>
       <a href="/?type=大数据" th:class="${(param.type != null) and (param.type[0] == '大数据')} ? 'active'">大数据</a>
+      <a href="/?type=行业报告" th:class="${(param.type != null) and (param.type[0] == '行业报告')} ? 'active'">行业报告</a>
     </div>
     <div class="hotNews clearfix">
       <div class="newRow" th:each="news : ${newsList}">
@@ -70,37 +71,5 @@
     </div>
   </div>
 </div>
-<script>
-    var setDefaultActive = function() {
-        var path = window.location.pathname;
-        if(path=='/storyAudio'||path=='/music')
-            path='/other'
-        var element = $("#url li a[href='" + path + "']").parent();
-        element.addClass("active");
-    }
-    // setDefaultActive();
-
-    var isFirstLoad = true;
-    function openTab(evt, tabName) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("hotNews");
-        for (i = 0; i < tabcontent.length; i++) {
-            if(isFirstLoad && i==0)
-                continue;
-            tabcontent[i].style.display = "none";
-        }
-        if(isFirstLoad)
-        {
-            isFirstLoad = false;
-            return;
-        }
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-        document.getElementById(tabName).style.display = "block";
-        evt.currentTarget.className += " active";
-    }
-</script>
 </body>
 </html>
