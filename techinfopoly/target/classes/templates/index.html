@@ -1,0 +1,75 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<meta>
+  <meta charset="UTF-8">
+  <title>首页</title>
+  <!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />-->
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" th:href="@{/css/style.css}"/>
+
+  <script src="../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+  <script src="../static/js/bootstrap.min.js"  th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<div class="header">
+  <a><img th:src="@{/images/logo.png}" src="../static/images/logo.png" alt=""></a>
+
+</div>
+<div class="container clearfix">
+  <div class="conLeft clearfix">
+    <img src="../static/images/banner.jpg" th:src="@{/images/banner.jpg}" class="banner" alt="">
+    <div class="nav">
+      <a href="/?type=金融科技" th:class="${(param.type == null) or (param.type[0] == '金融科技')} ? 'active'">金融科技</a>
+      <a href="/?type=区块链" th:class="${(param.type != null) and (param.type[0] == '区块链')} ? 'active'">区块链</a>
+      <a href="/?type=消费" th:class="${(param.type != null) and (param.type[0] == '消费')} ? 'active'">消费</a>
+      <a href="/?type=新零售" th:class="${(param.type != null) and (param.type[0] == '新零售')} ? 'active'">新零售</a>
+      <a href="/?type=大数据" th:class="${(param.type != null) and (param.type[0] == '大数据')} ? 'active'">大数据</a>
+      <a href="/?type=行业报告" th:class="${(param.type != null) and (param.type[0] == '行业报告')} ? 'active'">行业报告</a>
+    </div>
+    <div class="hotNews clearfix">
+      <div class="newRow" th:each="news : ${newsList}">
+        <a th:href="@{'detail?id='+${news.id}}" target="_blank">
+          <span class="title_img"><img th:src="@{'data:image/jpg;base64,' + ${T(com.bankcomm.util.TransCodeUtil).byteArrayToString(news.cover)}}" alt=""></span>
+          <span class="titles" th:text="${news.title}"></span>
+          <span th:text="${news.update}" class="times"></span>
+        </a>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-4"></div>
+      <div th:if="${newsList.totalPages != 1}" class="form-group col-md-4 pagination-centered">
+        <ul class="pagination" th:with="currentType = ${param.type == null} ? '金融科技' : ${param.type[0]}">
+          <li th:class="${newsList.number == 0} ?  'disabled page-item'">
+            <a class="page-link" th:href="@{/(pageSize=${selectedPageSize}, page=1, type=${currentType})}">&laquo;</a>
+          </li>
+          <li th:class="${newsList.number == 0} ? disabled : 'page-item'">
+            <a class="page-link" th:href="@{/(pageSize=${selectedPageSize}, page=${newsList.number}, type=${currentType})}">&larr;</a>
+          </li>
+          <li th:class="${newsList.number == (page - 1)} ? 'active pointer-disabled'" th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+            <a class="page-link" th:href="@{/(pageSize=${selectedPageSize}, page=${page}, type=${currentType})}" th:text="${page}"></a>
+          </li>
+          <li th:class="${newsList.number + 1 == newsList.totalPages} ? disabled">
+            <a class="page-link" th:href="@{/(pageSize=${selectedPageSize}, page=${newsList.number + 2}, type=${currentType})}">&rarr;</a>
+          </li>
+          <li th:class="${newsList.number + 1 == newsList.totalPages} ? disabled">
+            <a class="page-link" th:href="@{/(pageSize=${selectedPageSize}, page=${newsList.totalPages}, type=${currentType})}">&raquo;</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+  </div>
+  <div class="conRight clearfix">
+    <div class="newFlash">
+      <h5>7*24快讯</h5>
+      <ul>
+        <li th:each="news : ${topHotNewsList}">
+          <a th:href="@{'detail?id='+${news.id}}" target="_blank" th:text="${news.title}"></a>
+        </li>
+      </ul>
+      <div class="more"><a th:href="@{'hot'}" target="_blank" th:text="浏览更多"></a></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

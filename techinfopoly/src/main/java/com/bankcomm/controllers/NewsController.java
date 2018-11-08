@@ -39,6 +39,12 @@ public class NewsController {
         int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
         int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
         Page<News> newsList = newsService.getAllNews(PageRequest.of(evalPage, evalPageSize), type);
+        for (News news: newsList){
+            if (news.getPdf() != null)
+            {
+                news.setPdf("0".getBytes());
+            }
+        }
         Pager pager = new Pager(newsList.getTotalPages(), newsList.getNumber(), BUTTONS_TO_SHOW);
         modelAndView.addObject("newsList", newsList);
         modelAndView.addObject("topHotNewsList", newsService.getTopHotNews());
@@ -51,7 +57,12 @@ public class NewsController {
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public String showNewsDetail(@RequestParam Integer id, Model model){
         model.addAttribute("topHotNewsList", newsService.getTopHotNews());
-        model.addAttribute("news", newsService.getNewsById(id));
+        News news = newsService.getNewsById(id);
+        if (news.getPdf() != null)
+        {
+            news.setPdf("0".getBytes());
+        }
+        model.addAttribute("news", news);
         return "detail";
     }
 
