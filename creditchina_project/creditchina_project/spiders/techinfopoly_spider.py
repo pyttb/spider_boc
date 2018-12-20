@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import base64
 import datetime
+import json
+import time
 import logging
 import re
 import sys
@@ -24,18 +26,25 @@ class TechInfoPoly(scrapy.Spider):
     }
     execute('TRUNCATE TABLE SPIDER.NEWS IMMEDIATE')
     batch = datetime.datetime.now()
-    allowed_domains = ['tech.sina.com.cn','36kr.com','iresearch.cn']
+    allowed_domains = ['tech.sina.com.cn','36kr.com','iresearch.cn','new.qq.com']
     default_data = {
     }
     default_headers = {
+        'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36'
     }
     def start_requests(self):
         sites=['https://cre.mix.sina.com.cn/api/v3/get?callback=jQuery111207568558421793976_1538664874380&cateid=1z&cre=tianyi&mod=pctech&merge=3&statics=1&length=15&up=0&down=0&tm=1538664875&action=0&top_id=8oWdy%2C8oatR%2C8oBFT%2C8oY3T%2C8oYv6%2C8oYsw%2C%2C%2C8TdmN&offset=0&ad=%7B%22rotate_count%22%3A100%2C%22platform%22%3A%22pc%22%2C%22channel%22%3A%22tianyi_pctech%22%2C%22page_url%22%3A%22https%3A%2F%2Ftech.sina.com.cn%2F%22%2C%22timestamp%22%3A1538664875110%7D&_=1538664874381',
                 'http://feed.mix.sina.com.cn/api/roll/get?pageid=372&lid=2431&k=&num=50&page=1&r=0.048739369442073244&callback=jQuery311013339969585292177_1538789898529&_=1538789898530',
                'http://center.iresearch.cn/ajax/process.ashx?work=login&uAccount=1514767024%40qq.com&uPassword=happy2018&days=15&t=0.5486955056946374',
+               'https://pacaio.match.qq.com/irs/rcd?cid=146&token=49cbb2154853ef1a74ff4e53723372ce&ext=tech',
+               'https://www.toutiao.com/api/pc/feed/?category=news_tech&utm_source=toutiao&widen=1&max_behot_time=0&max_behot_time_tmp=0&tadrequire=true&as=A195DB4F72C4F54&cp=5BF2E49F15543E1&_signature=6TDf6AAAss1cD7BFas6RkOkw3.',
+               'https://36kr.com/pp/api/aggregation-entity?type=web_latest_article&b_id=37453&per_page=1000',
+               'http://www.iresearch.cn/mindex.shtml',
+               'http://it.sohu.com/ ',
+               'http://www.tmtpost.com/'
                ]
         for site in sites:
-            yield scrapy.Request(url=site, callback=self.parse_basic_info, dont_filter=True)
+            yield scrapy.Request(url=site, headers=self.default_headers, callback=self.parse_basic_info, dont_filter=True)
 
     def parse_basic_info(self, response):
         basic_info = response.text
@@ -44,7 +53,10 @@ class TechInfoPoly(scrapy.Spider):
             for news in news_list:
                 url = news['url'].replace('\\', '')
                 title = news['title']
-                cover = base64.b64encode(requests.get(news['thumb'].replace('\\', '')).content)
+                img_url =  news['thumb'].replace('\\', '')
+                cover = ''
+                if len(img_url) > 0:
+                    cover = base64.b64encode(requests.get(img_url).content)
                 hot = '0'
                 type = '金融科技'
                 yield scrapy.Request(url=url, headers=self.default_headers, body=urllib.urlencode(self.default_data),
@@ -66,6 +78,101 @@ class TechInfoPoly(scrapy.Spider):
                 if response.url.startswith('http://center.iresearch.cn'):
                     yield scrapy.Request(url='http://report.iresearch.cn/common/page/rsprocess.ashx?work=csearch&vid=0&sid=2&yid='+str(datetime.datetime.now().year), headers=self.default_headers,
                                     callback=self.login_iresearch, dont_filter=True)
+                else:
+                    if response.url.startswith('https://pacaio.match.qq.com'):    # 腾讯科技
+                        basic_info = json.loads(basic_info)
+                        news = basic_info['data']
+                        for new in news:
+                            url = new['url']
+                            title = new['title']
+                            cover = base64.b64encode(requests.get(new['img']).content)
+                            hot = '0'
+                            type = '金融科技'
+                            yield scrapy.Request(url=url, headers=self.default_headers,
+                                                 body=urllib.urlencode(self.default_data),
+                                                 meta={'title': title, 'cover': cover, 'hot': hot, 'type': type},
+                                                 callback=self.parse_detail_info, dont_filter=True)
+                    else:
+                        if response.url.startswith('https://www.toutiao.com/api'):    # 今日头条科技
+                            news_list = eval(basic_info.replace('null', 'None').replace('false', 'None').replace('true', 'None').replace('\n', '').replace('\r',''))['data']
+                            for news in news_list:
+                                tag = news['tag']
+                                if tag == 'news_tech':
+                                    url = 'https://www.toutiao.com' + news['source_url']
+                                    title = news['title']
+                                    if news.has_key('image_url'):
+                                        cover = base64.b64encode(requests.get('http:' + news['image_url']).content)
+                                        hot = '0'
+                                        type = '金融科技'
+                                        yield scrapy.Request(url=url, headers=self.default_headers,
+                                                             body=urllib.urlencode(self.default_data),
+                                                             meta={'title': title, 'cover': cover, 'hot': hot,
+                                                                   'type': type},
+                                                             callback=self.parse_detail_info, dont_filter=True)
+                        else:
+                            if response.url.startswith('https://36kr.com'):     # 36氪
+                                news_list = eval(basic_info.replace('null', 'None').replace('false', 'None').replace('\n', '').replace('\r', ''))['data']['items']
+                                for news in news_list:
+                                    url = "https://www.36kr.com/p/" + str(news['post']['id'])
+                                    title = news['post']['title']
+                                    title = title.decode('unicode-escape')
+                                    img_url = news['post']['cover'].replace('\\', '')
+                                    cover = base64.b64encode(requests.get(img_url).content)
+                                    hot = '0'
+                                    type = '金融科技'
+                                    update = news['post']['published_at']
+                                    yield scrapy.Request(url=url, headers=self.default_headers,
+                                                         body=urllib.urlencode(self.default_data),
+                                                         meta={'title': title, 'cover': cover, 'hot': hot,
+                                                               'type': type, 'update': update},
+                                                         callback=self.parse_detail_info, dont_filter=True)
+                            else:
+                                if response.url.startswith('http://www.iresearch.cn/'):     #艾瑞网
+                                    news_list = Selector(text=basic_info).xpath('//div[@class="ire-picTextList"]//ul//li').extract()
+                                    for news in news_list:
+                                        href = Selector(text=news).xpath('//li//div[@class="ire-picTextList-in"]//div[@class="picTextList-pic"]//a/@href').extract()
+                                        if len(href) >0:
+                                            url = Selector(text=news).xpath('//li//div[@class="ire-picTextList-in"]//div[@class="picTextList-pic"]//a/@href').extract()[0].strip()
+                                            img_url = Selector(text=news).xpath('//li//div[@class="ire-picTextList-in"]//div[@class="picTextList-pic"]//a//img/@src').extract()[0].strip()
+                                            cover = base64.b64encode(requests.get(img_url).content)
+                                            hot = '0'
+                                            type = '金融科技'
+                                            yield scrapy.Request(url=url, headers=self.default_headers,
+                                                                 body=urllib.urlencode(self.default_data),
+                                                                 meta={'cover': cover, 'hot': hot,
+                                                                       'type': type},
+                                                                 callback=self.parse_detail_info, dont_filter=True)
+                                else:
+                                    if response.url.startswith('http://it.sohu.com/'):     # 搜狐科技
+                                        news_list = Selector(text=basic_info).xpath('//div[@class="news-list clearfix"]//div[@data-role="news-item"]').extract()
+                                        for news in news_list:
+                                            info = Selector(text=news).xpath('//div[@data-role="news-item"]//div[@class="pic img-do left"]').extract()
+                                            if len(info) > 0:
+                                                url = 'http:' + Selector(text=news).xpath('//div[@data-role="news-item"]//div[@class="pic img-do left"]//a/@href').extract()[0].strip()
+                                                img_url ='http:' + Selector(text=news).xpath('//div[@data-role="news-item"]//div[@class="pic img-do left"]//a//img/@src').extract()[0].strip()
+                                                cover = base64.b64encode(requests.get(img_url).content)
+                                                hot = '0'
+                                                type = '金融科技'
+                                                yield scrapy.Request(url=url, headers=self.default_headers,
+                                                                     body=urllib.urlencode(self.default_data),
+                                                                     meta={'cover': cover, 'hot': hot,
+                                                                           'type': type},
+                                                                     callback=self.parse_detail_info, dont_filter=True)
+                                    else:
+                                        if response.url.startswith('http://www.tmtpost.com/'):    # 钛媒体
+                                            news_list = Selector(text=basic_info).xpath('//ul[@class="article-list"]//li[@class="post_part clear"]').extract()
+                                            for news in news_list:
+                                                url = 'http://www.tmtpost.com' + Selector(text=news).xpath('//li[@class="post_part clear"]//a/@href').extract()[0].strip()
+                                                img_url = Selector(text=news).xpath('//li[@class="post_part clear"]//a//img/@data-original').extract()[0].strip()
+                                                cover = base64.b64encode(requests.get(img_url).content)
+                                                hot = '0'
+                                                type = '金融科技'
+                                                yield scrapy.Request(url=url, headers=self.default_headers,
+                                                                     body=urllib.urlencode(self.default_data),
+                                                                     meta={'cover': cover, 'hot': hot,
+                                                                           'type': type},
+                                                                     callback=self.parse_detail_info, dont_filter=True)
+
 
     @inline_requests
     def parse_detail_info(self, response):
@@ -121,6 +228,154 @@ class TechInfoPoly(scrapy.Spider):
                 batch = self.batch
                 table_name = 'spider.news'
                 yield self.save_result(batch, url, title, content, cover, pdf, keywords, hot, type, update, table_name, response).load_item()
+            else:
+                if ('https://new.qq.com' in response.url):   # 解析腾讯科技详情
+                    url = response.url.strip()
+                    title = response.meta['title']
+                    content = ''.join(Selector(text=detail_info).xpath('//div[@class="content-article"]/p').extract())
+                    if len(content) != 0:
+                        pattern = re.compile('</?a[^>]*>')
+                        content = pattern.sub('', content)
+                        pattern = re.compile('</?img[^>]*>')
+                        content = pattern.sub('', content)
+                        cover = response.meta['cover']
+                        pdf = ''
+                        keywords = Selector(text=detail_info).xpath('//meta[@name="keywords"]/@content').extract()[
+                            0].strip()
+                        hot = response.meta['hot']
+                        type = response.meta['type']
+                        if type != '快讯':
+                            type = self.get_type(content)
+                        update = ''
+                        update = detail_info.split('pubtime": "')
+                        update = update[1].split('",')[0]
+                        batch = self.batch
+                        table_name = 'spider.news'
+                        yield self.save_result(batch, url, title, content, cover, pdf, keywords, hot, type, update,
+                                               table_name, response).load_item()
+                else:
+                    if ("https://www.toutiao.com" in response.url):   #头条详情解析
+                        url = response.url.strip()
+                        title = Selector(text=detail_info).xpath('//title/text()').extract()[
+                            0].strip()
+                        content = detail_info.split('content: \'')
+                        content = content[1].split('groupId: \'')[0]
+                        content = content.replace(";',", "")
+                        content = content.encode("utf-8")
+                        pattern = re.compile('</?a[^>]*>')
+                        content = pattern.sub('', content)
+                        pattern = re.compile('</?img[^>]*>')
+                        content = pattern.sub('', content)
+                        cover = response.meta['cover']
+                        pdf = ''
+                        keywords = Selector(text=detail_info).xpath('//meta[@name="keywords"]/@content').extract()[
+                            0].strip()
+                        hot = response.meta['hot']
+                        type = response.meta['type']
+                        if type != '快讯':
+                            type = self.get_type(content)
+                        update = ''
+                        update = detail_info.split("time: '")
+                        update = update[1].split("'")[0]
+                        batch = self.batch
+                        table_name = 'spider.news'
+                        yield self.save_result(batch, url, title, content, cover, pdf, keywords, hot, type, update,
+                                               table_name, response).load_item()
+                    else:
+                        if ("https://www.36kr.com" in response.url):      # 36氪解析详情
+                            url = response.url.strip()
+                            title = Selector(text=detail_info).xpath('//title/text()').extract()[
+                                0].strip()
+                            title = title.replace('_36氪', '')
+                            content = ''.join(
+                                Selector(text=detail_info).xpath('//div[@class="common-width content articleDetailContent"]/p').extract())
+                            pattern = re.compile('</?a[^>]*>')
+                            content = pattern.sub('', content)
+                            pattern = re.compile('</?img[^>]*>')
+                            content = pattern.sub('', content)
+
+                            cover = response.meta['cover']
+                            pdf = ''
+                            keywords = Selector(text=detail_info).xpath('//meta[@name="keywords"]/@content').extract()[
+                                0].strip()
+                            hot = response.meta['hot']
+                            type = response.meta['type']
+                            if type != '快讯':
+                                type = self.get_type(content)
+                            update = response.meta['update']
+                            batch = self.batch
+                            table_name = 'spider.news'
+                            yield self.save_result(batch, url, title, content, cover, pdf, keywords, hot, type, update,
+                                                   table_name, response).load_item()
+                        else:
+                            if ('iresearch.cn' in response.url):          # 艾瑞网详情解析
+                                url = response.url.strip()
+                                title = Selector(text=detail_info).xpath('//title/text()').extract()[
+                                    0].strip()
+                                title = title.replace('_互联网_艾瑞网', '')
+                                content = ''.join(Selector(text=detail_info).xpath('//div[@class="m-article"]/p').extract())
+                                pattern = re.compile('</?a[^>]*>')
+                                content = pattern.sub('', content)
+                                pattern = re.compile('</?img[^>]*>')
+                                content = pattern.sub('', content)
+
+                                cover = response.meta['cover']
+                                pdf = ''
+                                keywords = Selector(text=detail_info).xpath('//meta[@name="keywords"]/@content').extract()[0].strip()
+                                hot = response.meta['hot']
+                                type = response.meta['type']
+                                if type != '快讯':
+                                    type = self.get_type(content)
+                                update = Selector(text=detail_info).xpath('//div[@class="box"]//div[@class="origin"]//em/text()').extract()[0].strip()
+                                batch = self.batch
+                                table_name = 'spider.news'
+                                yield self.save_result(batch, url, title, content, cover, pdf, keywords, hot, type,
+                                                       update, table_name, response).load_item()
+                            else:
+                                if ('http://www.sohu.com' in response.url):     # 搜狐科技解析详情
+                                    url = response.url.strip()
+                                    title = Selector(text=detail_info).xpath('//title/text()').extract()[0].strip()
+                                    content = ''.join(Selector(text=detail_info).xpath('//article[@class="article"]/p').extract())
+                                    pattern = re.compile('</?a[^>]*>')
+                                    content = pattern.sub('', content)
+                                    pattern = re.compile('</?img[^>]*>')
+                                    content = pattern.sub('', content)
+                                    cover = response.meta['cover']
+                                    pdf = ''
+                                    keywords = Selector(text=detail_info).xpath('//meta[@name="keywords"]/@content').extract()[0].strip()
+                                    hot = response.meta['hot']
+                                    type = response.meta['type']
+                                    if type != '快讯':
+                                        type = self.get_type(content)
+                                    update = Selector(text=detail_info).xpath('//div[@class="article-info"]//span[@class="time"]/text()').extract()[0].strip()
+                                    batch = self.batch
+                                    table_name = 'spider.news'
+                                    yield self.save_result(batch, url, title, content, cover, pdf, keywords, hot, type,
+                                                           update, table_name, response).load_item()
+                                else:
+                                    if ('http://www.tmtpost.com/' in response.url):     # 钛媒体详情解析
+                                        url = response.url.strip()
+                                        title = Selector(text=detail_info).xpath('//title/text()').extract()[0].strip()
+                                        title = title.replace('-钛媒体官方网站', '')
+                                        content = ''.join(Selector(text=detail_info).xpath('//div[@class="inner"]/p').extract())
+                                        pattern = re.compile('</?a[^>]*>')
+                                        content = pattern.sub('', content)
+                                        pattern = re.compile('</?img[^>]*>')
+                                        content = pattern.sub('', content)
+                                        cover = response.meta['cover']
+                                        pdf = ''
+                                        keywords = Selector(text=detail_info).xpath('//meta[@name="keywords"]/@content').extract()[0].strip()
+                                        hot = response.meta['hot']
+                                        type = response.meta['type']
+                                        if type != '快讯':
+                                            type = self.get_type(content)
+                                        update = Selector(text=detail_info).xpath('//div[@class="post-info"]//span[@class="time "]/text()').extract()[0].strip()
+                                        batch = self.batch
+                                        table_name = 'spider.news'
+                                        yield self.save_result(batch, url, title, content, cover, pdf, keywords, hot,
+                                                               type,
+                                                               update, table_name, response).load_item()
+
 
     def save_pdf(self, response):
         path = response.url.split('/')[-1][0:-5] + 'pdf'
