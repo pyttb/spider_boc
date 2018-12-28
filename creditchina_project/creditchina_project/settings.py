@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # Scrapy settings for creditchina_project project
 #
@@ -133,7 +133,7 @@ MYSQL_PORT = 3306
 # DB2 CONFIGURE
 DB2_HOST = "127.0.0.1"
 DB2_DBNAME = "iass"
-DB2_USER = ""
+DB2_USER = "PAN"
 DB2_PASSWORD = ""
 DB2_PORT = 50000
 

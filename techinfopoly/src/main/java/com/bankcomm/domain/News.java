@@ -11,53 +11,11 @@ import java.util.Base64;
 import java.util.Date;
 
 @Entity
-@Table(name = "NEWS")
-//@SqlResultSetMappings(
-//        value = {
-//                @SqlResultSetMapping(
-//                        name="getAllHotNews",
-//                        classes = {
-//                                @ConstructorResult(
-//                                        targetClass = News.class,
-//                                        columns = {
-//                                                @ColumnResult(name = "id", type = Integer.class),
-//                                                @ColumnResult(name = "url", type = String.class),
-//                                                @ColumnResult(name = "title", type = String.class),
-//                                                @ColumnResult(name = "content", type = String.class),
-//                                                @ColumnResult(name = "cover", type = byte[].class),
-//                                                @ColumnResult(name = "type", type = String.class),
-//                                                @ColumnResult(name = "keywords", type = String.class),
-//                                                @ColumnResult(name = "hot", type = String.class),
-//                                                @ColumnResult(name = "update", type = String.class),
-//                                                @ColumnResult(name = "batch", type = Date.class)}
-//                                )
-//                        }
-//                ),
-//                @SqlResultSetMapping(
-//                        name="getTopHotNews",
-//                        classes = {
-//                                @ConstructorResult(
-//                                        targetClass = News.class,
-//                                        columns = {
-//                                                @ColumnResult(name = "id", type = Integer.class),
-//                                                @ColumnResult(name = "url", type = String.class),
-//                                                @ColumnResult(name = "title", type = String.class),
-//                                                @ColumnResult(name = "content", type = String.class),
-//                                                @ColumnResult(name = "cover", type = byte[].class),
-//                                                @ColumnResult(name = "type", type = String.class),
-//                                                @ColumnResult(name = "keywords", type = String.class),
-//                                                @ColumnResult(name = "hot", type = String.class),
-//                                                @ColumnResult(name = "update", type = String.class),
-//                                                @ColumnResult(name = "batch", type = Date.class)}
-//                                )
-//                        }
-//                )
-//        }
-//)
+@Table(name = "NEWS", schema = "SPIDER")
 @SqlResultSetMappings(
         value = {
                 @SqlResultSetMapping(
-                        name="getAllHotNews",
+                        name="getAllByHot",
                         entities=@EntityResult(
                                 entityClass=News.class,
                                 fields={
@@ -77,6 +35,44 @@ import java.util.Date;
                 ),
                 @SqlResultSetMapping(
                         name="getTopHotNews",
+                        entities=@EntityResult(
+                                entityClass=News.class,
+                                fields={
+                                        @FieldResult(name="id", column="id"),
+                                        @FieldResult(name="url", column="url"),
+                                        @FieldResult(name="title", column="title"),
+                                        @FieldResult(name="content", column="content"),
+                                        @FieldResult(name="cover", column="cover"),
+                                        @FieldResult(name="pdf", column="pdf"),
+                                        @FieldResult(name="type", column="type"),
+                                        @FieldResult(name="keywords", column="keywords"),
+                                        @FieldResult(name="hot", column="hot"),
+                                        @FieldResult(name="update", column="update"),
+                                        @FieldResult(name="batch", column="batch")
+                                }
+                        )
+                ),
+                @SqlResultSetMapping(
+                        name="getAllByType",
+                        entities=@EntityResult(
+                                entityClass=News.class,
+                                fields={
+                                        @FieldResult(name="id", column="id"),
+                                        @FieldResult(name="url", column="url"),
+                                        @FieldResult(name="title", column="title"),
+                                        @FieldResult(name="content", column="content"),
+                                        @FieldResult(name="cover", column="cover"),
+                                        @FieldResult(name="pdf", column="pdf"),
+                                        @FieldResult(name="type", column="type"),
+                                        @FieldResult(name="keywords", column="keywords"),
+                                        @FieldResult(name="hot", column="hot"),
+                                        @FieldResult(name="update", column="update"),
+                                        @FieldResult(name="batch", column="batch")
+                                }
+                        )
+                ),
+                @SqlResultSetMapping(
+                        name="getRecommendNewsList",
                         entities=@EntityResult(
                                 entityClass=News.class,
                                 fields={
@@ -99,16 +95,28 @@ import java.util.Date;
 @NamedNativeQueries(
         value = {
                 @NamedNativeQuery(
-                        name="getAllHotNews",
-                        query = "SELECT * FROM {h-schema}NEWS WHERE HOT = '1'",
+                        name="getAllByHot",
+                        query = "SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch FROM News u WHERE u.hot = ?1",
                         resultClass = News.class,
-                        resultSetMapping = "getAllHotNews"
+                        resultSetMapping = "getAllByHot"
                 ),
                 @NamedNativeQuery(
                         name="getTopHotNews",
-                        query = "SELECT * FROM {h-schema}NEWS WHERE HOT = '1' FETCH FIRST 20 ROWS ONLY",
+                        query = "SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch FROM News u WHERE u.hot = '1' FETCH FIRST 20 ROWS ONLY",
                         resultClass = News.class,
                         resultSetMapping = "getTopHotNews"
+                ),
+                @NamedNativeQuery(
+                        name="getAllByType",
+                        query = "SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch FROM News u WHERE u.type LIKE '%'||?1||'%'",
+                        resultClass = News.class,
+                        resultSetMapping = "getAllByType"
+                ),
+                @NamedNativeQuery(
+                        name="getRecommendNewsList",
+                        query = "SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch FROM News u WHERE u.type LIKE '%'||?1||'%' FETCH FIRST 6 ROWS ONLY",
+                        resultClass = News.class,
+                        resultSetMapping = "getRecommendNewsList"
                 ),
         }
 )

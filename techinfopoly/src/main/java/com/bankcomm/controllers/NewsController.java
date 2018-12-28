@@ -39,12 +39,12 @@ public class NewsController {
         int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
         int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
         Page<News> newsList = newsService.getAllNews(PageRequest.of(evalPage, evalPageSize), type);
-        for (News news: newsList){
-            if (news.getPdf() != null)
-            {
-                news.setPdf("0".getBytes());
-            }
-        }
+//        for (News news: newsList){
+//            if (news.getPdf() != null)
+//            {
+//                news.setPdf("0".getBytes());
+//            }
+//        }
         Pager pager = new Pager(newsList.getTotalPages(), newsList.getNumber(), BUTTONS_TO_SHOW);
         modelAndView.addObject("newsList", newsList);
         modelAndView.addObject("topHotNewsList", newsService.getTopHotNews());
@@ -55,8 +55,9 @@ public class NewsController {
     }
 
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
-    public String showNewsDetail(@RequestParam Integer id, Model model){
+    public String showNewsDetail(@RequestParam Integer id, @RequestParam(value = "type", defaultValue = "金融科技") String type, Model model){
         model.addAttribute("topHotNewsList", newsService.getTopHotNews());
+        model.addAttribute("recommendNewsList", newsService.getRecommendNewsList(type));
         News news = newsService.getNewsById(id);
         if (news.getPdf() != null)
         {
@@ -72,6 +73,12 @@ public class NewsController {
         int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
         int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
         Page<News> allHotNewsList = newsService.getAllHotNews(PageRequest.of(evalPage, evalPageSize), "1");
+//        for (News news: allHotNewsList){
+//            if (news.getPdf() != null)
+//            {
+//                news.setPdf("0".getBytes());
+//            }
+//        }
         Pager pager = new Pager(allHotNewsList.getTotalPages(), allHotNewsList.getNumber(), BUTTONS_TO_SHOW);
         modelAndView.addObject("allHotNewsList", allHotNewsList);
         modelAndView.addObject("selectedPageSize", evalPageSize);
@@ -80,7 +87,14 @@ public class NewsController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "pdf", method = RequestMethod.GET)
+    @RequestMapping("/recommend")
+    public ModelAndView getRecommendNewsList(@RequestParam(value = "type", defaultValue = "金融科技") String type){
+        ModelAndView modelAndView = new ModelAndView("detail");
+        modelAndView.addObject("recommendNewsList", newsService.getRecommendNewsList(type));
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/pdf", method = RequestMethod.GET)
     public StreamingResponseBody generatePdf(HttpServletResponse response, @RequestParam Integer id, Model model) throws IOException {
         News news = newsService.getNewsById(id);
         response.setContentType("application/pdf");

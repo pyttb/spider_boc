@@ -27,7 +27,7 @@
     </div>
     <div class="hotNews clearfix">
       <div class="newRow" th:each="news : ${newsList}">
-        <a th:href="@{'detail?id='+${news.id}}" target="_blank">
+        <a th:href="@{detail(id=${news.id}, type=(${param.type == null} ? '金融科技' : ${param.type[0]}))}" target="_blank">
           <span class="title_img"><img th:src="@{'data:image/jpg;base64,' + ${T(com.bankcomm.util.TransCodeUtil).byteArrayToString(news.cover)}}" alt=""></span>
           <span class="titles" th:text="${news.title}"></span>
           <span th:text="${news.update}" class="times"></span>
@@ -64,7 +64,7 @@
       <h5>7*24快讯</h5>
       <ul>
         <li th:each="news : ${topHotNewsList}">
-          <a th:href="@{'detail?id='+${news.id}}" target="_blank" th:text="${news.title}"></a>
+          <a th:href="@{detail(id=${news.id}, type=(${param.type == null} ? '金融科技' : ${param.type[0]}))}" target="_blank" th:text="${news.title}"></a>
         </li>
       </ul>
       <div class="more"><a th:href="@{'hot'}" target="_blank" th:text="浏览更多"></a></div>

@@ -20,7 +20,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public Page<News> getAllNews(Pageable pageable, String type) {
-        return newsRepository.findAllByTypeEquals(pageable, type);
+        return newsRepository.getAllByType(pageable, type);
     }
 
     @Override
@@ -30,11 +30,16 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public Page<News> getAllHotNews(Pageable pageable, String hot) {
-        return newsRepository.findAllByHotEquals(pageable, hot);
+        return newsRepository.getAllByHot(pageable, hot);
     }
 
     @Override
     public List<News> getTopHotNews() {
         return newsRepository.getTopHotNews();
+    }
+
+    @Override
+    public List<News> getRecommendNewsList(String type) {
+        return newsRepository.getRecommendNewsList(type);
     }
 }

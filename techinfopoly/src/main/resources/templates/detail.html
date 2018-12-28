@@ -21,10 +21,15 @@
         标签：<a href="javascript:;" th:each="keyword: ${#strings.arraySplit(news.keywords,',')}" th:text="${keyword}"></a>
       </div>
     </div>
-    <div class="discuss">
-      <div class="disTitle">参与讨论</div>
-        <textarea name="content" rows="6" maxlength="2000" placeholder="输入留言 最大输入2000字"></textarea>
-        <div class="comment"><span>评论</span></div>
+    <div class="hotNews clearfix">
+      <div class="disTitle">更多推荐</div>
+      <div class="newRowRecommend" th:each="news : ${recommendNewsList}">
+        <a th:href="@{detail(id=${news.id}, type=(${param.type == null} ? '金融科技' : ${param.type[0]}))}" target="_blank">
+          <span class="title_img"><img th:src="@{'data:image/jpg;base64,' + ${T(com.bankcomm.util.TransCodeUtil).byteArrayToString(news.cover)}}" alt=""></span>
+          <span class="titles" th:text="${news.title}"></span>
+          <span th:text="${news.update}" class="times"></span>
+        </a>
+      </div>
     </div>
   </div>
   <div class="conRight">
@@ -32,7 +37,7 @@
       <h5>7*24快讯</h5>
         <ul>
           <li th:each="news : ${topHotNewsList}">
-            <a th:href="@{'detail?id='+${news.id}}" target="_blank" th:text="${news.title}"></a>
+            <a th:href="@{detail(id=${news.id}, type=(${param.type == null} ? '金融科技' : ${param.type[0]}))}" target="_blank" th:text="${news.title}"></a>
           </li>
         </ul>
         <div class="more"><a th:href="@{'hot'}" target="_blank" th:text="浏览更多"></a></div>

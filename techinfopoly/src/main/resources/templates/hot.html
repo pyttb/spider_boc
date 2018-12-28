@@ -17,8 +17,7 @@
         <h3 th:text="7x24小时快讯"></h3>
         <ul class="hotNews" id="financial">
           <li th:each="news : ${allHotNewsList}">
-              <!--<a th:href="@{'detail?id='+${news.id}}" th:text="${news.title }+' ('+${news.update}+')'" target="_blank"></a>-->
-            <a th:href="@{'detail?id='+${news.id}}" target="_blank"><span th:text="${news.title }"></span><span th:text="${news.update}"></span></a >
+            <a th:href="@{detail(id=${news.id}, type=(${param.type == null} ? '金融科技' : ${param.type[0]}))}" target="_blank"><span th:text="${news.title }"></span><span th:text="${news.update}"></span></a >
           </li>
         </ul>
         <div class="row">

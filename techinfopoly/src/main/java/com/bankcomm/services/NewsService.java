@@ -15,4 +15,6 @@ public interface NewsService {
     Page<News> getAllHotNews(Pageable pageable, String hot);
 
     List<News> getTopHotNews();
+
+    List<News> getRecommendNewsList(String type);
 }
