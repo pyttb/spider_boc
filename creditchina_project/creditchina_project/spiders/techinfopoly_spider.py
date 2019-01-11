@@ -425,8 +425,8 @@ class TechInfoPoly(scrapy.Spider):
         type = ''
         if '金融' in content or '银行' in content or '证券' in content:
             type= type + '金融科技,'
-        if '区块连' in content:
-            type = type + '区块连,'
+        if '区块链' in content:
+            type = type + '区块链,'
         if '消费' in content or '汽车' in content or '电子' in content:
             type = type + '消费,'
         if '新零售' in content or 'O2O' in content:
