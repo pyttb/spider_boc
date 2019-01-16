@@ -10,7 +10,7 @@ from scrapy.utils.project import get_project_settings
 from twill.shell import Singleton
 
 settings = {
-    'DB2_HOST': "106.14.151.4",
+    'DB2_HOST': "106.14.0.242",
     'DB2_DBNAME': "iassdb",
     'DB2_USER': "iassuser",
     'DB2_PASSWORD': "iassuser",

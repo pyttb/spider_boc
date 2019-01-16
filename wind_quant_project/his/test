@@ -1,0 +1,35 @@
+# -*- coding: utf-8 -*-
+import datetime
+import time
+import os
+import sys
+from WindPy import w
+
+from dbutils import insertOne, insertMany, execute
+
+# 加入MYSQL连接，测试使用MSYQLDB
+
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+yesterdayDt = datetime.date.today() - datetime.timedelta(1)
+yesterday = str(yesterdayDt).replace('-', '')
+w.start()
+
+wind_stocks_all = w.wset("sectorconstituent","date="+str(yesterdayDt)+";sectorid=1000013859000000")
+#wind_stocks_all = w.wset("sectorconstituent","date=2019-01-02;sectorid=1000013859000000")
+print(time.strftime('%Y.%m.%d %H:%M:%S', time.localtime(time.time())))
+print(len(wind_stocks_all.Data[0]))
+wind_codes_all = ''
+for i in range(0, 1000):
+    wind_codes_all = wind_codes_all + wind_stocks_all.Data[1][i] + ","
+print(wind_codes_all)
+
+datas = w.wss(wind_codes_all, "windcode,comp_name,latestissurercreditrating,ratingoutlooks,latestissurercreditratingdate,rate_lateissuerchng,latestissurercreditratingtype,deducteddebttoassets2")
+print(len(datas.Data[0]))
+print(datas.Data[1])
+
+
+print(time.strftime('%Y.%m.%d %H:%M:%S', time.localtime(time.time())))
