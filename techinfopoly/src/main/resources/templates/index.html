@@ -1,22 +1,27 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<meta>
+<head>
   <meta charset="UTF-8">
   <title>首页</title>
-  <!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />-->
   <link rel="stylesheet" type="text/css" href="../static/css/style.css" th:href="@{/css/style.css}"/>
-
+  <link rel="stylesheet" type="text/css" href="../static/slick/slick.css" th:href="@{/slick/slick.css}"/>
+  <link rel="stylesheet" type="text/css" href="../static/slick/slick-theme.css" th:href="@{/slick/slick-theme.css}"/>
   <script src="../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+  <script src="../static/js/jquery-migrate-3.0.1.min.js" th:src="@{/js/jquery-migrate-3.0.1.min.js}"></script>
   <script src="../static/js/bootstrap.min.js"  th:src="@{/js/bootstrap.min.js}"></script>
+  <script src="../static/slick/slick.min.js" th:src="@{/slick/slick.min.js}"></script>
 </head>
 <body>
 <div class="header">
   <a><img th:src="@{/images/logo.png}" src="../static/images/logo.png" alt=""></a>
-
 </div>
 <div class="container clearfix">
   <div class="conLeft clearfix">
-    <img src="../static/images/banner.jpg" th:src="@{/images/banner.jpg}" class="banner" alt="">
+    <div class="autoplay">
+      <div><img src="../static/images/banner.jpg" th:src="@{/images/banner.jpg}" class="banner" alt=""></div>
+      <div><img src="../static/images/scrap.png" th:src="@{/images/scrap.png}" class="banner" alt=""></div>
+      <div><img src="../static/images/fintech.jpg" th:src="@{/images/fintech.jpg}" class="banner" alt=""></div>
+    </div>
     <div class="nav">
       <a href="/?type=金融科技" th:class="${(param.type == null) or (param.type[0] == '金融科技')} ? 'active'">金融科技</a>
       <a href="/?type=区块链" th:class="${(param.type != null) and (param.type[0] == '区块链')} ? 'active'">区块链</a>
@@ -62,14 +67,38 @@
   <div class="conRight clearfix">
     <div class="newFlash">
       <h5>7*24快讯</h5>
-      <ul>
-        <li th:each="news : ${topHotNewsList}">
-          <a th:href="@{detail(id=${news.id}, type=(${param.type == null} ? '金融科技' : ${param.type[0]}))}" target="_blank" th:text="${news.title}"></a>
-        </li>
-      </ul>
+      <div class="slide-container">
+        <ul class="slide-list js-slide-list">
+          <li th:each="news, iterStat  : ${topHotNewsList}" th:class="${iterStat .odd}? 'odd' : 'even'">
+            <a th:href="@{detail(id=${news.id}, type=(${param.type == null} ? '金融科技' : ${param.type[0]}))}" target="_blank" th:text="${news.title}"></a>
+          </li>
+        </ul>
+      </div>
       <div class="more"><a th:href="@{'hot'}" target="_blank" th:text="浏览更多"></a></div>
     </div>
   </div>
 </div>
 </body>
+<script>
+  var doscroll = function(){
+    var $parent = $('.js-slide-list');
+    var $first = $parent.find('li:first');
+    var height = $first.height();
+    $first.animate({
+      marginTop: -height + 'px'
+    }, 500, function() {
+      $first.css('marginTop', 0).appendTo($parent);
+    });
+  };
+  setInterval(function(){doscroll()}, 2000);
+
+  $(document).ready(function(){
+    $('.autoplay').slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 2000,
+    });
+  });
+</script>
 </html>

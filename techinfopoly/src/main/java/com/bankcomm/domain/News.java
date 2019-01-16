@@ -96,25 +96,25 @@ import java.util.Date;
         value = {
                 @NamedNativeQuery(
                         name="getAllByHot",
-                        query = "SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch FROM News u WHERE u.hot = ?1",
+                        query = "SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch FROM News u WHERE u.hot = ?1 ORDER BY u.update DESC",
                         resultClass = News.class,
                         resultSetMapping = "getAllByHot"
                 ),
                 @NamedNativeQuery(
                         name="getTopHotNews",
-                        query = "SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch FROM News u WHERE u.hot = '1' FETCH FIRST 20 ROWS ONLY",
+                        query = "SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch FROM News u WHERE u.hot = '1' ORDER BY u.update DESC FETCH FIRST 26 ROWS ONLY",
                         resultClass = News.class,
                         resultSetMapping = "getTopHotNews"
                 ),
                 @NamedNativeQuery(
                         name="getAllByType",
-                        query = "SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch FROM News u WHERE u.type LIKE '%'||?1||'%'",
+                        query = "SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch FROM News u WHERE u.type LIKE '%'||?1||'%' ORDER BY u.update DESC",
                         resultClass = News.class,
                         resultSetMapping = "getAllByType"
                 ),
                 @NamedNativeQuery(
                         name="getRecommendNewsList",
-                        query = "SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch FROM News u WHERE u.type LIKE '%'||?1||'%' FETCH FIRST 6 ROWS ONLY",
+                        query = "select t.id, t.url, t.title, t.content, t.cover, null as pdf, t.type, t.keywords, t.hot, t.update, t.batch from ( SELECT u.id, u.url, u.title, u.content, u.cover, null as pdf, u.type, u.keywords, u.hot, u.update, u.batch, RAND() as idx FROM News u WHERE u.type LIKE '%'||?1||'%' ORDER BY idx FETCH FIRST 6 ROWS ONLY ) t",
                         resultClass = News.class,
                         resultSetMapping = "getRecommendNewsList"
                 ),

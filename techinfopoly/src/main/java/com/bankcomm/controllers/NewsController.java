@@ -59,8 +59,10 @@ public class NewsController {
         model.addAttribute("topHotNewsList", newsService.getTopHotNews());
         model.addAttribute("recommendNewsList", newsService.getRecommendNewsList(type));
         News news = newsService.getNewsById(id);
-        if (news.getPdf() != null)
-        {
+//        if (news.getPdf() != null){
+//            news.setPdf("0".getBytes());
+//        }
+        if("行业报告".equals(type)) {
             news.setPdf("0".getBytes());
         }
         model.addAttribute("news", news);
