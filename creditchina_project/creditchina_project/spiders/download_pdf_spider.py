@@ -22,19 +22,24 @@ from statsmodels.genmod.tests.test_gee import pdf
 
 
 # 获取当前日期
-# nowtime = [datetime.now().date().strftime('%Y%m%d')]
+nowtime = [datetime.now().date().strftime('%Y%m%d')]
 # currentTime = [datetime.now().date().strftime('%Y-%m-%d')]
 # 
-nowtime = [(date.today() + timedelta(days = -1)).strftime("%Y%m%d")]
+# nowtime = [(date.today() + timedelta(days = -1)).strftime("%Y%m%d")]
 currentTime = [(date.today() + timedelta(days = -1)).strftime("%Y-%m-%d")]
 
+# local
+# DAT_FILE_PATH = '/home/pd/download/pdf.dat'
+# DATA_FILE_PATH = '/home/pd/download/lobs'
+# DAT_DATA = 'new.dat'
 
+# prd
 DAT_FILE_PATH = '/usr/share/download/pdf.dat'
 DATA_FILE_PATH = '/usr/share/download/lobs'
 DAT_DATA = 'new.dat'
 
-# nowtime = ["20181220"]
-# currentTime = ["2018-12-20"]
+# nowtime = ["20190212"]
+# currentTime = ["2019-02-12"]
 
  
 #存文件路径
@@ -82,7 +87,6 @@ class TudiEndSpider(scrapy.Spider):
         # 获取当前日期        
 #         data_sum[0] = 0
     
-        logging.info("yestoday:" + nowtime[0])
 #         print("yestoday:" + nowtime[0])
         # 1.获取out表数据
         get_out_sql = "select SOURCE_CODE,CODE,ID from spider.RH_GOVT_CONTRACT_OUT where BATCHDATE = '" + nowtime[0] + "'"
@@ -102,7 +106,7 @@ class TudiEndSpider(scrapy.Spider):
         logging.info("in: " + str(len(cur_list)))
         
         
-        if len(out_list) != 0 and len(out_list) < len(cur_list):
+        if len(out_list) != 0 and len(out_list) != len(cur_list):
             delete_sql = "delete from spider.RH_GOVT_CONTRACT_OUT where BATCHDATE = '" + nowtime[0] + "'"
             logging.info(delete_sql)
             execute(delete_sql)

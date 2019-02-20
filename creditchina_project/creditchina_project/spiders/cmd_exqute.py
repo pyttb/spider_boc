@@ -5,10 +5,16 @@ import logging
 # from ..settings import DAT_FILE_PATH,DATA_FILE_PATH,DAT_DATA
 
 
+# local
+# DAT_FILE_PATH = '/home/pd/download/pdf.dat'
+# DATA_FILE_PATH = '/home/pd/download/lobs'
+# DAT_DATA = 'new.dat'
 
+# prd
 DAT_FILE_PATH = '/usr/share/download/pdf.dat'
 DATA_FILE_PATH = '/usr/share/download/lobs'
 DAT_DATA = 'new.dat'
+
 
 def exqute_cmd():
     #print(commands.getstatusoutput('db2 connect to iass;db2 "import from /home/pd/Desktop/pdf.dat of del insert into spider.RH_COVT_CONTRACT_OUT"'))
